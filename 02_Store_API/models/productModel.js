@@ -12,7 +12,7 @@ const ProductSchema = new mongoose.Schema( {
             type: Number,             
             required: [true, "Cannot be empty"], 
         },
-        feature : { 
+        featured : { 
             type: Boolean,    
             default: false 
         },
