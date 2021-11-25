@@ -9,14 +9,19 @@ const {notFound} = require('./middlewares/404');
 const { errorHandler } = require('./middlewares/errorHandler');
 
 
+//-----------------------------------------------------------------------
+const PORT = process.env.PORT || 5000;
 connectToDB(process.env.MONGO_URL)
 .then(() =>  {
     console.log('Connection to MongoDB:  Success !');
-    app.listen(3030);
+    app.listen(PORT, () => {
+        console.log(`Server on PORT ${PORT}`) // in console run : PORT=6000 node app.js
+    })
 })
 .catch((err) => console.log(err.message));
 
- 
+
+//-----------------------------------------------------------------------s
 // static assets
 app.use(express.static('public'));
 
@@ -32,7 +37,4 @@ app.use(notFound);
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server on port ${PORT}`)
-})
+

@@ -4,7 +4,6 @@
 
 // //---------------------------------------------------------------------
 // exports.getAllTasks = async (req, res) => {
-    
 //     try{
 //         const tasks = await Task.find({}).sort({ createdAt: 1 })
 //         res.status(200).send({tasks});
@@ -103,7 +102,7 @@
 ------------------------------------------------------------------------*/
 const Task = require ('./../models/task');
 const asyncWrapper = require('./../middlewares/asyncWrapper');
-const { createCustomError}  = require('./../errors/customError');
+const { createCustomError }  = require('./../errors/customError');
 
 
 //---------------------------------------------------------------------
