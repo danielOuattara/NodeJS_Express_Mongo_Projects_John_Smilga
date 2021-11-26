@@ -207,14 +207,11 @@ const getAllProductsStatic = async (req, res) => {
     // const skip = (page - 1 ) * limit;
     // result = result.skip(skip).limit(limit);
 
+
+    // http://localhost:3000/api/v1/products/static?numericFilters=price<20,rating>=4.5
     const products = await result;
     res.status(200).json({numberOfHits: products.length, products});
 }
-
-
-
-
-
 
 const getAllProducts = async (req, res) => {
     console.log(req.query)
