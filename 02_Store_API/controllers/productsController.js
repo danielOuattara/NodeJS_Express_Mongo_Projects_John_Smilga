@@ -133,29 +133,58 @@ const getAllProductsStatic = async (req, res) => {
 
     /* NUMERIC FILTER */
 
-    const products = await Product
-    .find({ price: {$gt: 30}})
-    .sort('price')
-    .select('name price')
-    // .skip(20)
-    // .limit(1)
-    res.status(200).json({numberOfHits: products.length, products});
+    // const products = await Product
+    // .find({ price: {$gt: 30}})
+    // .sort('price')
+    // .select('name price')
+    // // .skip(20)
+    // // .limit(1)
+    // res.status(200).json({numberOfHits: products.length, products});
 
-    // const { featured, company, name, sort, fields } = req.query;
-    // const queryObject= {};
-    // if(featured) {
-    //     queryObject.featured = featured === 'true' ? true : false
-    // }
-    // if(company) {
-    //     queryObject.company = company;
-    // }
-    // if(name) {
-    //     // queryObject.name = name; // looking for exact name
-    //     // queryObject.name = new RegExp('^' + name, 'i');
-    //     queryObject.name = {$regex: name, $options: 'i'}  // content name value
-    // }
-    // // console.log(queryObject);
-    // let result = Product.find(queryObject);
+    const { featured, company, name, sort, fields, numericFilters } = req.query;
+    const queryObject= {};
+    if(featured) {
+        queryObject.featured = featured === 'true' ? true : false
+    }
+    if(company) {
+        queryObject.company = company;
+    }
+    if(name) {
+        // queryObject.name = name; // looking for exact name
+        // queryObject.name = new RegExp('^' + name, 'i');
+        queryObject.name = {$regex: name, $options: 'i'}  // content name value
+    }
+
+    console.log("numericsfilters -->" ,numericFilters)
+
+    if(numericFilters) {
+        const operatorsMap = {
+            '>':'$gt',
+            '>=':'$gte',
+            '=': '$eq',
+            '<':'$lt',
+            '<=':'$lte',
+        };
+        const regEx = /\b(<|>|>=|<=|=)\b/g;
+        let filters = numericFilters.replace(regEx, (match) => `-${operatorsMap[match]}-`);
+
+        //console.log('filters -->', filters);
+
+        //console.log('splitted ==>', filters.split(',')[0].split("-"))
+
+        const options = ['price', 'rating'];        
+        filters = filters.split(',').forEach( (item) => {
+            const [field, operator, value] = item.split('-');
+            if(options.includes(field)) {
+                queryObject[field]= { [operator]: Number(value)}
+            }
+            return 
+        });
+    }
+    // console.log(filters);
+    console.log(queryObject);
+    
+    let result = Product.find(queryObject);
     // if(sort) {
     //     console.log(sort);
     //     const sortList = sort.split(',').join(' ');
@@ -178,8 +207,8 @@ const getAllProductsStatic = async (req, res) => {
     // const skip = (page - 1 ) * limit;
     // result = result.skip(skip).limit(limit);
 
-    // const products = await result;
-    // res.status(200).json({numberOfHits: products.length, products});
+    const products = await result;
+    res.status(200).json({numberOfHits: products.length, products});
 }
 
 
