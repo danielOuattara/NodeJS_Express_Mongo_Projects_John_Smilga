@@ -1,4 +1,6 @@
 
+
+//-------------------------------------------------------------
 class CustomAPIError extends Error {
     constructor(message, statusCode) {
         super(message);
@@ -6,6 +8,7 @@ class CustomAPIError extends Error {
     }
 }
 
+//-------------------------------------------------------------
 const createCustomError = (message, statusCode) => {
     return new CustomAPIError(message, statusCode);
 }

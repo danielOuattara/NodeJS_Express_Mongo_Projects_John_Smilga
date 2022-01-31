@@ -20,8 +20,7 @@ const ProductSchema = new mongoose.Schema( {
             type: Number,    
             default: 4.5, 
         },
-
-        creatAt: { 
+        createdAt: { 
             type: Date, 
             default: Date.now(),
         },
@@ -33,7 +32,7 @@ const ProductSchema = new mongoose.Schema( {
             },
         },
     }, 
-    // { timestamps: true, updateAt: false}
+    // { timestamps: true, updatedAt: false}
 );
 
 module.exports = mongoose.model("Product", ProductSchema);

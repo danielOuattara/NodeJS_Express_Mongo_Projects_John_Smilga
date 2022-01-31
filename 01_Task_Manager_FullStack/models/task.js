@@ -9,12 +9,12 @@ const TaskSchema = new Schema( {
             trim: true, 
             maxlength: [ 50, "Max length 50 chars"] 
         },
-        completed : { 
+        completed: { 
             type: Boolean,    
             default: false 
         },
     }, 
-    { timestamps: true, updateAt: false}
+    { timestamps: true, updatedAt: false}
 );
 
 module.exports = mongoose.model("Task", TaskSchema);
