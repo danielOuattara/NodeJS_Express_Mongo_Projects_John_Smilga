@@ -4,7 +4,9 @@ const { connectToDB } = require('./database/connect');
 const Product = require('./models/productModel');
 const jsonProducts = require('./products.json');
 
-// const start = async() => {
+
+//--------------------------------------------------------------
+// const start = async() => {  OK!
 //     try {
 //         await connectToDB(process.env.MONGO_URI);
 //         console.log("Connection Success: ready to populate !");
@@ -18,6 +20,8 @@ const jsonProducts = require('./products.json');
 // }
 
 // start();
+
+//----------------------------------------------------------------
 
 const start = () => {
         connectToDB(process.env.MONGO_URI)
