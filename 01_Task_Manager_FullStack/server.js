@@ -1,6 +1,7 @@
 require('dotenv').config();
 const http = require('http');  // importer le package de serveur http de Node.js. L'objet 'http' permet de créer un serveur.
 const app  = require ('./app');
+const { connectToDB }  = require('./database/connect');
 
 
 const normalizePort = val => {
@@ -52,4 +53,11 @@ server.on ('listening', () => {
     console.log(`Server is running on http://localhost:${port}/`);
 });
 
-server.listen(port);
+connectToDB(process.env.MONGO_URL)
+    .then(() =>  {
+        console.log('Connection to MongoDB:  Success !');
+        server.listen(port);
+    })
+    .catch((err) => console.log(err.message));
+
+

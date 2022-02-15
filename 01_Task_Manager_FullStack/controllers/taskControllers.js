@@ -21,18 +21,18 @@
 //     }
 // }
 
-// //---------------------------------------------------------------------
-// // exports.getTask = async (req, res) => {
-// //     try {
-// //         const task = await Task.findOne({_id: req.params.id});
-// //        if(!task) {
-// //            return res.status(404).json('Task Not Found !')
-// //        }
-// //         return res.status(200).json(task)
-// //     } catch (error) {
-// //         return res.status(400).json(error.message) ;
-// //     }
-// // }
+//---------------------------------------------------------------------
+// exports.getTask = async (req, res) => {
+//     try {
+//         const task = await Task.findOne({_id: req.params.id});
+//        if(!task) {
+//            return res.status(404).json('Task Not Found !')
+//        }
+//         return res.status(200).json(task)
+//     } catch (error) {
+//         return res.status(400).json(error.message) ;
+//     }
+// }
 
 // exports.getOneTask = async (req, res) => {
 //     try {
@@ -61,20 +61,20 @@
 //     }
 // }
 
-// //---------------------------------------------------------------------
-// // exports.deleteTask = async (req, res) => {
-// //     try {
-// //         const task = await Task.findOneAndDelete({_id: req.params.id})
-// //         if(!task) {
-// //             return res.status(404).json('Task Not Found !')
-// //         }
-// //         const tasks = await Task.find({}).sort({ createdAt: 1 })
-// //         res.status(200).send({tasks});
+//---------------------------------------------------------------------
+// exports.deleteTask = async (req, res) => {
+//     try {
+//         const task = await Task.findOneAndDelete({_id: req.params.id})
+//         if(!task) {
+//             return res.status(404).json('Task Not Found !')
+//         }
+//         const tasks = await Task.find({}).sort({ createdAt: 1 })
+//         res.status(200).send({tasks});
 
-// //     } catch (error) {
-// //         return res.status(500).json(error.message)
-// //     }
-// // }
+//     } catch (error) {
+//         return res.status(500).json(error.message)
+//     }
+// }
 
 // exports.deleteTask = async (req, res) => {
 //     try {
@@ -103,8 +103,8 @@ const { createCustomError }  = require('./../errors/customError');
 
 //---------------------------------------------------------------------
 exports.getAllTasks = asyncWrapper(async (req, res) => {
-        const tasks = await Task.find({}).sort({ createdAt: 1 })
-        res.status(200).send({tasks});
+  const tasks = await Task.find({}).sort({ createdAt: 1 })
+  res.status(200).send({tasks});
 })
 
 //---------------------------------------------------------------------
@@ -119,10 +119,10 @@ exports.createTask =  asyncWrapper(async (req, res) => {
 exports.getOneTask = asyncWrapper( async (req, res, next ) => {
         const task = await Task.findById(req.params.id)
         if(!task) {
-            // const error = new Error('Task Not Found');
+            // const error = new Error('Task Not Found'); // Manual setting
             // error.status = 404;
             // return next(error)
-            return next(createCustomError('Task Not Found !', 404));
+            return next(createCustomError('Task Not Found !', 404)); // Class Error Generator
         }
         return res.status(200).json({task});
 })

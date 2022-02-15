@@ -1,17 +1,16 @@
 const express = require('express');
 const app = express();
 const taskRouter = require('./routers/taskRoute');
-const { connectToDB }  = require('./database/connect');
-// const  connectToDB  = require('./database/connect.js');
+// const { connectToDB }  = require('./database/connect');
+// // const  connectToDB  = require('./database/connect.js');
 const { notFound } = require('./middlewares/404');
 const { errorHandler } = require('./middlewares/errorHandler');
 
 //-----------------------------------------------------------------------
 
-connectToDB(process.env.MONGO_URL)
-.then(() => console.log('Connection to MongoDB:  Success !'))
-.catch((err) => console.log(err.message));
-
+// connectToDB(process.env.MONGO_URL)
+// .then(() => console.log('Connection to MongoDB:  Success !'))
+// .catch((err) => console.log(err.message));
 
 //-----------------------------------------------------------------------
 
