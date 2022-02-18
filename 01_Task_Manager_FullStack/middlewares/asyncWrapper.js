@@ -11,8 +11,6 @@ const asyncWrapper = (func) => {
 
 module.exports = asyncWrapper;
 
-
-
 /* 
 exports.getAllTasks = async (req, res) => {
     try {
@@ -22,7 +20,6 @@ exports.getAllTasks = async (req, res) => {
         res.status(500).json(err.message);
     }
 }
-
 
 exports.getAllTasks = asyncWrapper (async (req, res) => {
     try {
