@@ -1,6 +1,0 @@
-
-Step by step:
-
--validation + mongoose docs
-- handle error promise rejection
-- other queries + mongoose docs @ 1H 30'
