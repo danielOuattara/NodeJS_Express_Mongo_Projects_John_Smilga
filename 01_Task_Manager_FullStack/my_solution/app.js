@@ -14,7 +14,7 @@ const { errorHandler } = require("./middlewares/errorHandler");
 
 //-----------------------------------------------------------------------
 
-app.use(express.static("public")); // static assets
+app.use(express.static("./public")); // static assets
 
 app.use(express.urlencoded({ extended: false })); // parse form data
 

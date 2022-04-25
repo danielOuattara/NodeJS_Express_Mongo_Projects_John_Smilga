@@ -1,18 +1,23 @@
 const mongoose = require("mongoose");
 
+// no more required on Mongoose v6
 const connectParams = {
-  // not required on Mongoose v6
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
 };
 
-exports.connectToDB = (url) => {
-  return mongoose.connect(url, connectParams);
-};
-
+// --------------------------------------------------------
 // const connectToDB = (url) => {
 //     return mongoose.connect(url, connectParams);
 // }
 
 // module.exports = connectToDB;
+
+// --------------------------------------------------------
+// exports.connectToDB = (url) => {
+//   return mongoose.connect(url, connectParams);
+// };
+
+// --------------------------------------------------------
+exports.connectToDB = (url) => mongoose.connect(url, connectParams);
