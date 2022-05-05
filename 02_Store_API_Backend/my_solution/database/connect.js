@@ -6,6 +6,4 @@ const connectParams = {
   useCreateIndex: true,
 };
 
-exports.connectToDB = (url) => {
-  return mongoose.connect(url, connectParams);
-};
+exports.connectToDB = (url) => mongoose.connect(url, connectParams);

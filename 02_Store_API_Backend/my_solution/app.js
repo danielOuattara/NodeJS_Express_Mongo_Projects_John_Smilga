@@ -1,5 +1,4 @@
 require("express-async-errors");
-
 const express = require("express");
 const app = express();
 const productsRouter = require("./routes/productsRoutes");
@@ -16,6 +15,7 @@ const errorMiddleware = require("./middleware/error-handler");
 //         console.log(error.message);
 //     }
 // })()
+
 // // start()
 
 // connectToDB(process.env.MONGO_URI)
@@ -31,7 +31,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/products", productsRouter); // product routes
-
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
