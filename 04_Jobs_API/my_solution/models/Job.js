@@ -1,27 +1,30 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const JobSchema = new mongoose.Schema({
+const JobSchema = new mongoose.Schema(
+  {
     company: {
-        type: String,
-        required: [true, "Company name is required !"],
-        maxLength: 50
+      type: String,
+      required: [true, "Company name is required !"],
+      maxLength: 50,
     },
     position: {
-        type: String,
-        maxLength: 50,
+      type: String,
+      maxLength: 50,
     },
 
     status: {
-        type: String,
-        enum: ["interview", "declined", "pending"],
-        default: "pending",
+      type: String,
+      enum: ["interview", "declined", "pending"],
+      default: "pending",
     },
     createdBy: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User',
-        required: [true, "Job creator name is required !"],
-    }
-}, {timestamps: true})
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: [true, "Job creator name is required !"],
+    },
+  },
+  { timestamps: true }
+);
 
 // JobSchema.pre('save', async function () {
 
@@ -38,5 +41,4 @@ const JobSchema = new mongoose.Schema({
 
 // }
 
-
-module.exports = mongoose.model('Job', JobSchema);
+module.exports = mongoose.model("Job", JobSchema);
