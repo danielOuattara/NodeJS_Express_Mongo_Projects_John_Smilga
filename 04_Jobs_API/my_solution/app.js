@@ -3,8 +3,6 @@ require("express-async-errors");
 const express = require("express");
 const app = express();
 
-// DB connection helper
-const connectDB = require("./db/connect");
 const auth = require("./middleware/authentication");
 
 // routers modules

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const UserSchema = new mongoose.Schema({
@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Email is required !"],
     match: [
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      "Provide valide email adress !",
+      "Provide valid email adress !",
     ],
     unique: [true, "This email is already in use !"],
   },
@@ -26,8 +26,8 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre("save", async function () {
-  const salt = await bcrypt.genSalt(11);
-  this.password = await bcrypt.hash(this.password, salt);
+  const salt = await bcryptjs.genSalt(11);
+  this.password = await bcryptjs.hash(this.password, salt);
 });
 
 UserSchema.methods.getName = function () {
@@ -42,8 +42,8 @@ UserSchema.methods.createJWT = function () {
   );
 };
 
-UserSchema.methods.comparePassword = async function (reqPassword) {
-  const isMatched = bcrypt.compare(reqPassword, this.password);
+UserSchema.methods.comparePassword = function (password) {
+  const isMatched = bcryptjs.compare(password, this.password);
   return isMatched;
 };
 

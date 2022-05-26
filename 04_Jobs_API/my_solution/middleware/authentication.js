@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { UnauthenticatedError } = require("./../errors");
+const User = require("./../models/User");
 
 const auth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -9,8 +10,16 @@ const auth = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const playload = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { userId: playload.userId, name: playload.name };
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+    //--> Less: created local user object: only userId & name
+    // req.user = { userId: payload.userId, name: payload.name };
+
+    // --> Better: register in "req" a complete Mongoose user object 
+    //             with all possible associations.
+    const user = await User.findById(payload.userId).select("-password");
+    req.user = user;
+
     next();
   } catch (error) {
     throw new UnauthenticatedError("Request Denied !");

@@ -8,24 +8,15 @@ const {
 
 //----------------------------------------------------------------
 const getAllJobs = async (req, res) => {
-  const jobs = await Job.find({});
+  const jobs = await Job.find({ createdBy: req.user._id }).sort("createdAt");
   res.status(StatusCodes.OK).json({ count: jobs.length, jobs });
 };
 
 //----------------------------------------------------------------
-const getUserAllJobs = async (req, res) => {
-  const jobs = await Job.find({ createdBy: req.user.userId }).sort("createdAt");
-  res.status(StatusCodes.OK).send({ count: jobs.length, jobs });
-};
-
-//----------------------------------------------------------------
 const getOneJob = async (req, res) => {
-  const {
-    user: { userId },
-  } = req;
   const job = await Job.findOne({
     _id: req.params.jobId,
-    createdBy: userId,
+    createdBy: req.user._id,
   });
   if (!job) {
     throw new NotFoundError(
@@ -37,22 +28,18 @@ const getOneJob = async (req, res) => {
 
 //----------------------------------------------------------------
 const createJob = async (req, res) => {
-  req.body.createdBy = req.user.userId;
+  req.body.createdBy = req.user._id;
   const job = await Job.create(req.body);
   res.status(StatusCodes.CREATED).json({ job });
 };
 
 //----------------------------------------------------------------
 const updateJob = async (req, res) => {
-  const {
-    user: { userId },
-    body: { company, position },
-  } = req;
-  if (!company || !position) {
+  if (!req.body.company || !req.body.position) {
     throw new BadRequestError("Provide Comapny and Position fields !");
   }
   const job = await Job.findOneAndUpdate(
-    { _id: req.params.jobId, createdBy: userId },
+    { _id: req.params.jobId, createdBy: req.user._id },
     req.body,
     { new: true, runValidators: true }
   );
@@ -65,41 +52,20 @@ const updateJob = async (req, res) => {
 };
 
 //----------------------------------------------------------------
-// const updateJob = async (req, res) => {
-//     const { user: { userId }, body: { company, position } } = req;
-//     if(!company || !position) {
-//         throw new BadRequestError('Provide Comapny and Position fields !');
-//     }
-//     const job = await Job.findOne({_id: req.params.jobId});
-//     if(!job) {
-//         throw new NotFoundError(`No job found with for ${req.user.name} with id ${req.params.jobId}`)
-//     }
-//     if( job.createdBy != userId) {
-//         throw new UnauthenticatedError('Request Denied: Not Authorized !')
-//     }
-//     job.update(req.body, { new: true, runValidators: true })
-//     res.status(StatusCodes.OK).send({job});
-// }
-
-//----------------------------------------------------------------
-const deleteUserAllJobs = async (req, res) => {
+const deleteAllJobs = async (req, res) => {
   try {
     await Job.deleteMany();
-    res.send("delete job");
+    res.status(StatusCodes.OK).send("Jobs Deleted")
   } catch (error) {
     console.log(error);
   }
 };
 
 //----------------------------------------------------------------
-const deleteJob = async (req, res) => {
-  const {
-    user: { userId },
-    body: { company, position },
-  } = req;
+const deleteOneJob = async (req, res) => {
   const job = await Job.findOneAndDelete({
     _id: req.params.jobId,
-    createdBy: userId,
+    createdBy: req.user._id,
   });
   if (!job) {
     throw new NotFoundError(
@@ -109,12 +75,12 @@ const deleteJob = async (req, res) => {
   res.status(StatusCodes.OK).send(`Job is successfully deleted !`);
 };
 
+//-----------------------------------------------------------------
 module.exports = {
   getAllJobs,
-  getUserAllJobs,
   getOneJob,
   createJob,
   updateJob,
-  deleteJob,
-  deleteUserAllJobs,
+  deleteOneJob,
+  deleteAllJobs,
 };

@@ -2,7 +2,7 @@ const User = require("./../models/User");
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, UnauthenticatedError } = require("./../errors");
 
-//---------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
 // const register = async (req, res) => { // OK
 //     const user = await User.create(req.body)
 //     const token = jwt.sign( // now all is handle by the User model
@@ -16,10 +16,9 @@ const { BadRequestError, UnauthenticatedError } = require("./../errors");
 //---------------------------------------------------------------------------------------
 const register = async (req, res) => {
   const user = await User.create(req.body);
-  const token = user.createJWT();
   res
     .status(StatusCodes.CREATED)
-    .json({ user: { name: user.getName() }, token });
+    .json({ user: { name: user.getName() }, token: user.createJWT() });
 };
 
 //---------------------------------------------------------------------------------------
@@ -40,10 +39,10 @@ const login = async (req, res) => {
       throw new UnauthenticatedError("User unknown!");
     }
     //send token
-    const token = user.createJWT();
-    res.status(StatusCodes.OK).json({ user: { name: user.getName() }, token });
+    res
+      .status(StatusCodes.OK)
+      .json({ user: { name: user.getName() }, token: user.createJWT() });
   } catch (err) {
-    console.log(err);
     res.json(err.message);
   }
 };

@@ -7,9 +7,11 @@ const JobSchema = new mongoose.Schema(
       required: [true, "Company name is required !"],
       maxLength: 50,
     },
+
     position: {
       type: String,
-      maxLength: 50,
+      required: [true, "Position title is required !"],
+      maxLength: 100,
     },
 
     status: {
@@ -17,6 +19,7 @@ const JobSchema = new mongoose.Schema(
       enum: ["interview", "declined", "pending"],
       default: "pending",
     },
+
     createdBy: {
       type: mongoose.Types.ObjectId,
       ref: "User",
@@ -32,13 +35,6 @@ const JobSchema = new mongoose.Schema(
 
 // JobSchema.methods.getName = function () {
 //     return this.name;
-// }
-
-// JobSchema.methods.createJWT = function () {
-// }
-
-// JobSchema.methods.comparePassword = async function (reqPassword) {
-
 // }
 
 module.exports = mongoose.model("Job", JobSchema);
