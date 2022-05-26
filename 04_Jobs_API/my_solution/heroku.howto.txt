@@ -1,0 +1,7 @@
+npm init git
+git add . && git commit "initial commit fo deployment"
+heroku login
+heroku create dbo-jobs-tracker-api
+git remote -v
+heroku config:set JWT_LIFETIME=4h
+heroku git push heroku master
