@@ -48,8 +48,8 @@ const uploadProductImage = async (req, res, next) => {
     folder: "file-upload-john-smilga",
   });
 
-  console.log("result = ", result)
-
+  console.log("result = ", result);
+  fs.unlinkSync(productImage.tempFilePath);
   res.status(StatusCodes.CREATED).json({ image: { src: result.secure_url } });
 };
 
