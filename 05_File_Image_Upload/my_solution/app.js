@@ -3,28 +3,24 @@ require("express-async-errors");
 
 const express = require("express");
 const app = express();
-
-// database
 const connectDB = require("./db/connect");
 
-//router
 const productRouter = require("./routes/productRoutes");
 
 // error handler
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 
-const multer = require("./middleware/multer-config");
+// const multer = require("./middleware/multer-config");
+const fileUpload = require("express-fileupload");
 
-app.use(express.json());
 
-// app.get("/", (req, res) => {
-//   res.send("<h1>File Upload Starter</h1>");
-// });
+app.use(express.static("./public")); // static assets
 
-app.use("/api/v1/products", multer, productRouter);
+app.use(express.json());  // parse incoming json data
+app.use(fileUpload());
+app.use("/api/v1/products" , /* multer, */ productRouter);
 
-// middleware
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
