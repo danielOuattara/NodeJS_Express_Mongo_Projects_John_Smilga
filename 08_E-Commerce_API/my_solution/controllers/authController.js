@@ -1,10 +1,12 @@
 const User = require("./../models/User");
+const jwt = require("jsonwebtoken");
 const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
   UnauthenticatedError,
   CustomAPIError,
 } = require("./../errors");
+const { token } = require("morgan");
 
 //--------------------------------------------------------------------------------------
 // const register = async (req, res) => { // OK
@@ -29,10 +31,18 @@ const register = async (req, res) => {
   // first registered user should be an admin
   const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? "admin" : "user";
-  await User.create({ ...req.body, role });
+  const user = await User.create({ ...req.body, role });
 
-  // res.status(StatusCodes.CREATED).json({ user: { name: user.getName() }, token: user.createJWT() });
-  res.status(StatusCodes.CREATED).json({ mesage: "User Created successfully" });
+  // creating jwt token on register
+  const token = jwt.sign(
+    { userId: user._id, role: user.role, name: user.name },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_LIFETIME }
+  );
+
+  res
+    .status(StatusCodes.CREATED)
+    .json({ mesage: "User Created successfully", token });
 };
 
 //---------------------------------------------------------------------------------------
