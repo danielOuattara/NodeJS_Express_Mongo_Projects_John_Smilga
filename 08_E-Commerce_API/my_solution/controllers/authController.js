@@ -19,16 +19,20 @@ const {
 
 //---------------------------------------------------------------------------------------
 const register = async (req, res) => {
-  const userAlreadyExist = await User.find({ email: req.body.user });
+  const userAlreadyExist = await User.findOne({ email: req.body.email });
   if (userAlreadyExist) {
-    throw new BadRequestError(
-      "Email address already used. Please, choose another one"
-    );
+    return res.status(404).json({
+      message: "Email address already used. Please, choose another one",
+    });
   }
-  const user = await User.create(req.body);
+
+  // first registered user should be an admin
+  const isFirstAccount = (await User.countDocuments({})) === 0;
+  const role = isFirstAccount ? "admin" : "user";
+  await User.create({ ...req.body, role });
 
   // res.status(StatusCodes.CREATED).json({ user: { name: user.getName() }, token: user.createJWT() });
-  res.status(StatusCodes.CREATED).json({ user });
+  res.status(StatusCodes.CREATED).json({ mesage: "User Created successfully" });
 };
 
 //---------------------------------------------------------------------------------------
