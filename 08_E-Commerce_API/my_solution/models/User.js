@@ -32,10 +32,10 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-// UserSchema.pre("save", async function () {
-//   const salt = await bcryptjs.genSalt(11);
-//   this.password = await bcryptjs.hash(this.password, salt);
-// });
+UserSchema.pre("save", async function () {
+  const salt = await bcryptjs.genSalt(11);
+  this.password = await bcryptjs.hash(this.password, salt);
+});
 
 // UserSchema.methods.getName = function () {
 //   return this.name;
@@ -49,9 +49,9 @@ const UserSchema = new mongoose.Schema({
 //   );
 // };
 
-// UserSchema.methods.comparePassword = function (password) {
-//   const isMatched = bcryptjs.compare(password, this.password);
-//   return isMatched;
-// };
+UserSchema.methods.comparePassword = function (password) {
+  const isMatched = bcryptjs.compare(password, this.password);
+  return isMatched;
+};
 
 module.exports = mongoose.model("User", UserSchema);
