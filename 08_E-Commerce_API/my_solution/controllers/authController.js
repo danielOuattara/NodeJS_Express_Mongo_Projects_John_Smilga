@@ -1,6 +1,10 @@
 const User = require("./../models/User");
 const { StatusCodes } = require("http-status-codes");
-const { BadRequestError, UnauthenticatedError } = require("./../errors");
+const {
+  BadRequestError,
+  UnauthenticatedError,
+  CustomAPIError,
+} = require("./../errors");
 
 //--------------------------------------------------------------------------------------
 // const register = async (req, res) => { // OK
@@ -15,8 +19,16 @@ const { BadRequestError, UnauthenticatedError } = require("./../errors");
 
 //---------------------------------------------------------------------------------------
 const register = async (req, res) => {
+  const userAlreadyExist = await User.find({ email: req.body.user });
+  if (userAlreadyExist) {
+    throw new BadRequestError(
+      "Email address already used. Please, choose another one"
+    );
+  }
   const user = await User.create(req.body);
-  res.status(StatusCodes.CREATED).json({ user: { name: user.getName() }, token: user.createJWT() });
+
+  // res.status(StatusCodes.CREATED).json({ user: { name: user.getName() }, token: user.createJWT() });
+  res.status(StatusCodes.CREATED).json({ user });
 };
 
 //---------------------------------------------------------------------------------------
@@ -37,14 +49,16 @@ const login = async (req, res) => {
       throw new UnauthenticatedError("User unknown!");
     }
     //send token
-    res.status(StatusCodes.OK).json({ user: { name: user.getName() }, token: user.createJWT() });
+    res
+      .status(StatusCodes.OK)
+      .json({ user: { name: user.getName() }, token: user.createJWT() });
   } catch (err) {
     res.json(err.message);
   }
 };
 
 const logout = async (req, res) => {
-  res.send("Llogout user")
+  res.send("Logout user");
 };
 
 module.exports = { register, login, logout };
