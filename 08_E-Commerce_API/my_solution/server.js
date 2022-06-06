@@ -57,7 +57,7 @@ server.on("listening", () => {
 */
   const address = server.address();
   const bind = typeof address === "string" ? "pipe" + address : port;
-  console.log(`Server is running on http://localhost:${port}/`);
+  console.log(`Server is running on http://localhost:${port}/api/v1`);
 });
 
 connectDB(process.env.MONGO_URI)
