@@ -32,7 +32,11 @@ const register = async (req, res) => {
 
   res
     .status(StatusCodes.CREATED)
-    .json({ message: "User Created successfully", token });
+    .cookie("access_token", "Bearer " + token, {
+      expires: new Date(Date.now() + 8 * 3600000), // cookie will be removed after 8 hours
+      httpOnly: true,
+    })
+    .json({ message: "User Created successfully" });
 };
 
 //---------------------------------------------------------------------------------------
