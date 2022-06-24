@@ -1,31 +1,20 @@
 const User = require("./../models/User");
-const jwt = require("jsonwebtoken");
+const { createJWT } = require("./../utilities/index");
 const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
   UnauthenticatedError,
   CustomAPIError,
 } = require("./../errors");
-const { token } = require("morgan");
-
-//--------------------------------------------------------------------------------------
-// const register = async (req, res) => { // OK
-//     const user = await User.create(req.body)
-//     const token = jwt.sign( // now all is handle by the User model
-//         {userId: user._id },
-//         process.env.JWT_SECRET,
-//         {expiresIn: process.env.JWT_LIFETIME})
-//     res.status(StatusCodes.CREATED).json({ user: { name: user.name},token});  // 1
-//     // res.status(StatusCodes.CREATED).json({ user: { name: user.getName()},token});  // 2
-// }
 
 //---------------------------------------------------------------------------------------
 const register = async (req, res) => {
-  const userAlreadyExist = await User.findOne({ email: req.body.email });
-  if (userAlreadyExist) {
-    return res.status(404).json({
-      message: "Email address already used. Please, choose another one",
-    });
+  //check user exists
+  const userExist = await User.findOne({ email: req.body.email });
+  if (userExist) {
+    throw new BadRequestError(
+      "Email address already used. Please, choose another one"
+    );
   }
 
   // first registered user should be an admin
@@ -34,15 +23,16 @@ const register = async (req, res) => {
   const user = await User.create({ ...req.body, role });
 
   // creating jwt token on register
-  const token = jwt.sign(
-    { userId: user._id, role: user.role, name: user.name },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_LIFETIME }
-  );
+  const token = createJWT({
+    name: user.name,
+    userId: user._id,
+    role: user.role,
+    name: user.name,
+  });
 
   res
     .status(StatusCodes.CREATED)
-    .json({ mesage: "User Created successfully", token });
+    .json({ message: "User Created successfully", token });
 };
 
 //---------------------------------------------------------------------------------------
