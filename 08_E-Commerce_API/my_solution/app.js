@@ -5,14 +5,20 @@ const authRouter = require("./routes/authRoutes");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 // error handler
 
 // app.use(morgan("combined"))
 app.use(morgan("tiny"));
 app.use(express.json());
-app.use(express.static("./public"));
+app.use(cookieParser());
 
-app.get("/api/v1", (req, res) => res.send("Welcome to E-commerce API"));
+// app.use(express.static("./public")); // for later user
+
+app.get("/api/v1", (req, res) => {
+    console.log(req.cookies);
+  res.send("Welcome to E-commerce API");
+});
 
 app.use("/api/v1/auth", authRouter);
 app.use(notFoundMiddleware);
