@@ -19,6 +19,8 @@ const attachCookiesToResponse = (res, user) => {
   res.cookie("access_token", "Bearer " + token, {
     expires: new Date(Date.now() + 8 * 3600000), // cookie will be removed after 8 hours
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    signed: true,
   });
 };
 
