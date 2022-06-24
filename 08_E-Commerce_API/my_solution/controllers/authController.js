@@ -1,5 +1,5 @@
 const User = require("./../models/User");
-const { createJWT } = require("./../utilities/index");
+const { attachCookiesToResponse } = require("./../utilities/index");
 const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
@@ -20,22 +20,13 @@ const register = async (req, res) => {
   // first registered user should be an admin
   const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? "admin" : "user";
+
   const user = await User.create({ ...req.body, role });
+  const userPayload = { name: user.name, userId: user._id, role: user.role };
 
-  // creating jwt token on register
-  const token = createJWT({
-    name: user.name,
-    userId: user._id,
-    role: user.role,
-    name: user.name,
-  });
-
+  attachCookiesToResponse(res, userPayload);
   res
     .status(StatusCodes.CREATED)
-    .cookie("access_token", "Bearer " + token, {
-      expires: new Date(Date.now() + 8 * 3600000), // cookie will be removed after 8 hours
-      httpOnly: true,
-    })
     .json({ message: "User Created successfully" });
 };
 
