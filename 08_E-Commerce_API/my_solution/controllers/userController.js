@@ -18,7 +18,20 @@ const getSingleUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ nb_Hits: user.length, user });
 };
 
+//-----------------------------------------------------------------
+const showCurrentUser = async (req, res) => {
+  res.send("show current user");
+};
 
+//-----------------------------------------------------------------
+const updateUser = async (req, res) => {
+  res.send("udpate user");
+};
+
+//-----------------------------------------------------------------
+const updateUserPassword = async (req, res) => {
+  res.send("update user password");
+};
 
 //-----------------------------------------------------------------
 module.exports = {
