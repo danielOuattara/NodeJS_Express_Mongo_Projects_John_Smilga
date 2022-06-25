@@ -9,7 +9,8 @@ const {
 
 //---------------------------------------------------------------------------------------
 const getAllUsers = async (req, res) => {
-
+  const users = await User.find({})
+  res.status(StatusCodes.OK).json({nb_Hits:users.length, users})
 };
 
 //---------------------------------------------------------------------------------------
