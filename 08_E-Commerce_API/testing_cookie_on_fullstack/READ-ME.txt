@@ -1,0 +1,11 @@
+- JWT sent by cookie: frontend does not need to worry about sending JWT, 
+  it's done automatically
+- cookie with Http-only cannot be accessed by frontend
+- cookie has limitation: 4096 Octets
+- browser does all the necessary to send JWT by cookies if on the same domain
+- if the domain are different, to be able to share JWT via cookies, 
+  define a "proxi" in frontend package.json
+
+- what if I deploys my app (in producution); how could I use the  "proxy" tips 
+  in frontend package.json ?: I have to redirect to the host address, see _redirects 
+  in /public for an example
