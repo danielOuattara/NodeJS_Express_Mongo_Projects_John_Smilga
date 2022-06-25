@@ -9,6 +9,7 @@ const {
 
 //---------------------------------------------------------------------------------------
 const register = async (req, res) => {
+  //
   //check user exists
   const userExist = await User.findOne({ email: req.body.email });
   if (userExist) {
@@ -35,28 +36,32 @@ const register = async (req, res) => {
 
 //---------------------------------------------------------------------------------------
 const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      throw new BadRequestError("Email and Password are required !");
-    }
-    // check user exists !
-    const user = await User.findOne({ email });
-    if (!user) {
-      throw new UnauthenticatedError("User unknown!");
-    }
-    // check password !
-    const isPassword = await user.comparePassword(password);
-    if (!isPassword) {
-      throw new UnauthenticatedError("User unknown!");
-    }
-    //send token
-    res
-      .status(StatusCodes.OK)
-      .json({ user: { name: user.getName() }, token: user.createJWT() });
-  } catch (err) {
-    res.json(err.message);
+  //
+  // check email & password presents
+  if (!req.body.email || !req.body.password) {
+    throw new BadRequestError("Email and Password are required !");
   }
+
+  // check user exists !
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    throw new UnauthenticatedError("User unknown");
+  }
+
+  // check password !
+  const validPassword = await user.checkPassword(req.body.password);
+  if (!validPassword) {
+    throw new UnauthenticatedError("User unknown");
+  }
+
+  //every thing OK
+
+  // gather user data payload + attach cookies to response
+  const userPayload = { name: user.name, userId: user._id, role: user.role };
+  attachCookiesToResponse(res, userPayload);
+
+  // send back reponse to user
+  res.status(StatusCodes.OK).json({ message: "Login successfull" });
 };
 
 const logout = async (req, res) => {
