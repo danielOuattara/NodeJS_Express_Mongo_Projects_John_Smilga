@@ -24,7 +24,10 @@ const register = async (req, res) => {
   const user = await User.create({ ...req.body, role });
   const userPayload = { name: user.name, userId: user._id, role: user.role };
 
+  // this function attaches cookies to res
   attachCookiesToResponse(res, userPayload);
+
+  // res is completed with message of successfull registration then sent
   res
     .status(StatusCodes.CREATED)
     .json({ message: "User Created successfully" });
@@ -60,4 +63,5 @@ const logout = async (req, res) => {
   res.send("Logout user");
 };
 
+//-------------------------------------------------------------------------
 module.exports = { register, login, logout };

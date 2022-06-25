@@ -14,8 +14,9 @@ const isTokenValid = ({ token }) => jwt.verify(token, process.env.JWT_SECRET);
 
 //--------------------------------------------------------------------------------------
 const attachCookiesToResponse = (res, user) => {
-  // creating jwt token on register
+  // creating jwt token
   const token = createJWT(user);
+
   res.cookie("access_token", "Bearer " + token, {
     expires: new Date(Date.now() + 8 * 3600000), // cookie will be removed after 8 hours
     httpOnly: true,
