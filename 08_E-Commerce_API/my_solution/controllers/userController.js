@@ -6,26 +6,21 @@ const {
   CustomAPIError,
 } = require("./../errors");
 
-
-//---------------------------------------------------------------------------------------
+//-----------------------------------------------------------------
 const getAllUsers = async (req, res) => {
-  const users = await User.find({})
-  res.status(StatusCodes.OK).json({nb_Hits:users.length, users})
+  const users = await User.find({}).select("-password");
+  res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
 };
 
-//---------------------------------------------------------------------------------------
-const getSingleUser = async (req, res) => {};
+//-----------------------------------------------------------------
+const getSingleUser = async (req, res) => {
+  const user = await User.find({ _id: req.params.userId });
+  res.status(StatusCodes.OK).json({ nb_Hits: user.length, user });
+};
 
-//---------------------------------------------------------------------------------------
-const showCurrentUser = async (req, res) => {};
 
-//---------------------------------------------------------------------------------------
-const updateUser = async (req, res) => {};
 
-//---------------------------------------------------------------------------------------
-const updateUserPassword = async (req, res) => {};
-
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------
 module.exports = {
   getAllUsers,
   getSingleUser,
