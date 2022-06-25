@@ -2,15 +2,21 @@ const User = require("./../models/User");
 const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
+  NotFoundError,
   UnauthenticatedError,
   CustomAPIError,
 } = require("./../errors");
 
 //-----------------------------------------------------------------
 const getAllUsers = async (req, res) => {
-  const users = await User.find({}).select("-password");
+  const users = await User.find({ role: "user" }, "-password");
   res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
 };
+
+// const getAllUsers = async (req, res) => {
+//   const users = await User.find({ role: "user" }).select("-password");
+//   res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
+// };
 
 //-----------------------------------------------------------------
 const showCurrentUser = async (req, res) => {
@@ -29,8 +35,12 @@ const updateUserPassword = async (req, res) => {
 
 //-----------------------------------------------------------------
 const getSingleUser = async (req, res) => {
-  const user = await User.find({ _id: req.params.userId });
-  res.status(StatusCodes.OK).json({ nb_Hits: user.length, user });
+  const user = await User.findOne({ _id: req.params.userId }).select("-password");
+  if (!user) {
+    throw new NotFoundError("User Not Found");
+  }
+
+  res.status(StatusCodes.OK).json({ user });
 };
 
 //-----------------------------------------------------------------
