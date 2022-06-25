@@ -1,5 +1,8 @@
 const User = require("./../models/User");
-const { attachCookiesToResponse } = require("./../utilities/index");
+const {
+  attachCookiesToResponse,
+  destroyCookiesInResponse,
+} = require("./../utilities/index");
 const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
@@ -64,8 +67,10 @@ const login = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Login successfull" });
 };
 
+//-------------------------------------------------------------------------
 const logout = async (req, res) => {
-  res.send("Logout user");
+  destroyCookiesInResponse(res);
+  res.status(StatusCodes.OK).json({message: "User is logged out"})
 };
 
 //-------------------------------------------------------------------------

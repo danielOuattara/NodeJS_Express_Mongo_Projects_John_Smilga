@@ -24,10 +24,20 @@ const attachCookiesToResponse = (res, user) => {
     signed: true,
   });
 };
+//--------------------------------------------------------------------------------------
+
+const destroyCookiesInResponse = (res) => {
+  // change the cookie value + make it expire now !
+  res.cookie("access_token", "logout requested", {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+};
 
 //--------------------------------------------------------------------------------------
 module.exports = {
   createJWT,
   isTokenValid,
   attachCookiesToResponse,
+  destroyCookiesInResponse,
 };
