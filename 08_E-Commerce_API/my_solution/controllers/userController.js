@@ -13,12 +13,6 @@ const getAllUsers = async (req, res) => {
 };
 
 //-----------------------------------------------------------------
-const getSingleUser = async (req, res) => {
-  const user = await User.find({ _id: req.params.userId });
-  res.status(StatusCodes.OK).json({ nb_Hits: user.length, user });
-};
-
-//-----------------------------------------------------------------
 const showCurrentUser = async (req, res) => {
   res.send("show current user");
 };
@@ -31,6 +25,12 @@ const updateUser = async (req, res) => {
 //-----------------------------------------------------------------
 const updateUserPassword = async (req, res) => {
   res.send("update user password");
+};
+
+//-----------------------------------------------------------------
+const getSingleUser = async (req, res) => {
+  const user = await User.find({ _id: req.params.userId });
+  res.status(StatusCodes.OK).json({ nb_Hits: user.length, user });
 };
 
 //-----------------------------------------------------------------
