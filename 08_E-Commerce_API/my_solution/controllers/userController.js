@@ -25,13 +25,35 @@ const showCurrentUser = async (req, res) => {
 
 //-----------------------------------------------------------------
 const updateUser = async (req, res) => {
-  
   res.send("udpate user");
 };
 
 //-----------------------------------------------------------------
 const updateUserPassword = async (req, res) => {
-  res.send("update user password");
+  //
+  // check for passwords in req.body
+  if (!req.body.oldPassword || !req.body.newPassword) {
+    throw new BadRequestError("Passwords are required !");
+  }
+
+  // check user exists !
+  const user = await User.findOne({ _id: req.user._id });
+  if (!user) {
+    throw new UnauthenticatedError("User unknown");
+  }
+
+  // check password !
+  const validPassword = await user.checkPassword(req.body.oldPassword);
+  if (!validPassword) {
+    throw new UnauthenticatedError("User unknown");
+  }
+
+  //every thing OK
+  user.password = req.body.newPassword;
+  await user.save();
+
+  // send back reponse to user
+  res.status(StatusCodes.OK).json({ message: "Password successfully updated" });
 };
 
 //-----------------------------------------------------------------
