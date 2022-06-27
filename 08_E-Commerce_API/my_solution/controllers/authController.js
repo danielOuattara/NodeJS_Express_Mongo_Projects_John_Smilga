@@ -2,7 +2,9 @@ const User = require("./../models/User");
 const {
   attachCookiesToResponse,
   destroyCookiesInResponse,
+  createTokenUser,
 } = require("./../utilities/index");
+
 const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
@@ -26,7 +28,9 @@ const register = async (req, res) => {
   const role = isFirstAccount ? "admin" : "user";
 
   const user = await User.create({ ...req.body, role });
-  const userPayload = { name: user.name, userId: user._id, role: user.role };
+
+  // const userPayload = { name: user.name, userId: user._id, role: user.role };
+  const userPayload = createTokenUser(user);
 
   // this function attaches cookies to res
   attachCookiesToResponse(res, userPayload);
@@ -70,7 +74,7 @@ const login = async (req, res) => {
 //-------------------------------------------------------------------------
 const logout = async (req, res) => {
   destroyCookiesInResponse(res);
-  res.status(StatusCodes.OK).json({message: "User is logged out"})
+  res.status(StatusCodes.OK).json({ message: "User is logged out" });
 };
 
 //-------------------------------------------------------------------------
