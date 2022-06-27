@@ -34,4 +34,14 @@ const adminAuth = (req, res, next) => {
 };
 
 //--------------------------------------------------------------
-module.exports = { userAuth, adminAuth };
+const authorizedPermissions = (...roles) => {
+  return function (req, res, next) {
+    if (!roles.includes(req.user.role)) {
+      throw new UnauthorizedError("Request Denied! Admin Access Only");
+    }
+    next();
+  };
+};
+
+//--------------------------------------------------------------
+module.exports = { userAuth, adminAuth, authorizedPermissions };
