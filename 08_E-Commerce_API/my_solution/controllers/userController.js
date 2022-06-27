@@ -25,19 +25,50 @@ const showCurrentUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user: req.user });
 };
 
-//-----------------------------------------------------------------
+// //-----------------------------------------------------------------
+// const updateUser = async (req, res) => {   <-- findOneAndUpdate()
+//   //
+//   if (!req.body.name || !req.body.email) {
+//     throw new BadRequestError("Name and Email are required !");
+//   }
+//   console.log("req.user = ", req.user);
+
+//   const user = await User.findOneAndUpdate(
+//     { _id: req.user._id },
+//     { name: req.body.name, email: req.body.email },
+//     { new: true, runValidators: true }
+//   );
+
+//   const userPayload = createTokenUser(user);
+
+//   // this function attaches cookies to res
+//   attachCookiesToResponse(res, userPayload);
+
+//   // res is completed with message of successfull registration then sent
+//   res
+//     .status(StatusCodes.CREATED)
+//     .json({ message: "User updated successfully" });
+// };
+
+//--- OR ---
+
 const updateUser = async (req, res) => {
+  // <-- user.save() method
   //
   if (!req.body.name || !req.body.email) {
     throw new BadRequestError("Name and Email are required !");
   }
   console.log("req.user = ", req.user);
 
-  const user = await User.findOneAndUpdate(
-    { _id: req.user._id },
-    { name: req.body.name, email: req.body.email },
-    { new: true, runValidators: true }
-  );
+  const user = await User.findById(req.user._id);
+  user.name = req.body.name;
+  user.email = req.body.email;
+
+  await user.save();
+
+  //   { name: req.body.name, email: req.body.email },
+  //   { new: true, runValidators: true }
+  // );
 
   const userPayload = createTokenUser(user);
 
