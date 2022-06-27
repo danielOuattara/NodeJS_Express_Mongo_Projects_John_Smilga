@@ -20,11 +20,12 @@ const getAllUsers = async (req, res) => {
 
 //-----------------------------------------------------------------
 const showCurrentUser = async (req, res) => {
-  res.send("show current user");
+  res.status(StatusCodes.OK).json({ user: req.user });
 };
 
 //-----------------------------------------------------------------
 const updateUser = async (req, res) => {
+  
   res.send("udpate user");
 };
 
@@ -35,7 +36,9 @@ const updateUserPassword = async (req, res) => {
 
 //-----------------------------------------------------------------
 const getSingleUser = async (req, res) => {
-  const user = await User.findOne({ _id: req.params.userId }).select("-password");
+  const user = await User.findOne({ _id: req.params.userId }).select(
+    "-password"
+  );
   if (!user) {
     throw new NotFoundError("User Not Found");
   }

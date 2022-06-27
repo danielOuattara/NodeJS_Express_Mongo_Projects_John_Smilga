@@ -17,10 +17,13 @@ const {
 //----------------------------------------------------------------------
 
 router.route("/").get(userAuth, authorizedPermissions("admin"), getAllUsers);
-router.route("/showMe", showCurrentUser);
+router.route("/showMe").get(userAuth, showCurrentUser);
 
 router.route("/updateUser").patch(updateUser);
 router.route("/updateUserPassword").patch(updateUserPassword);
 
 router.route("/:userId").get(userAuth, getSingleUser);
+
+//-----------------------------------------------------------------------
+
 module.exports = router;
