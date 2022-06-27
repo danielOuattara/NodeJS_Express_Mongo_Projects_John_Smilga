@@ -7,7 +7,11 @@ const {
   CustomAPIError,
 } = require("./../errors");
 
-const { createTokenUser, attachCookiesToResponse } = require("./../utilities");
+const {
+  createTokenUser,
+  attachCookiesToResponse,
+  checkPermissions,
+} = require("./../utilities");
 
 //-----------------------------------------------------------------
 const getAllUsers = async (req, res) => {
@@ -110,7 +114,27 @@ const updateUserPassword = async (req, res) => {
 };
 
 //-----------------------------------------------------------------
+// const getSingleUser = async (req, res) => {  // <-- my method: Working  !
+//   if (req.user._id !== req.params.userId && req.user.role !== "admin") {
+//     throw new UnauthenticatedError("Access denied");
+//   }
+//   const user = await User.findOne({ _id: req.params.userId }).select(
+//     "-password"
+//   );
+//   if (!user) {
+//     throw new NotFoundError("User Not Found");
+//   }
+
+//   res.status(StatusCodes.OK).json({ user });
+// };
+//
+
+//--- OR
+
+//
 const getSingleUser = async (req, res) => {
+  // <-- John's method
+  checkPermissions(req.user, req.params.userId);
   const user = await User.findOne({ _id: req.params.userId }).select(
     "-password"
   );
