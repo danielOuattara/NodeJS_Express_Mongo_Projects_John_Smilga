@@ -7,6 +7,8 @@ const {
   CustomAPIError,
 } = require("./../errors");
 
+const { createTokenUser, attachCookiesToResponse } = require("./../utilities");
+
 //-----------------------------------------------------------------
 const getAllUsers = async (req, res) => {
   const users = await User.find({ role: "user" }, "-password");
@@ -25,7 +27,27 @@ const showCurrentUser = async (req, res) => {
 
 //-----------------------------------------------------------------
 const updateUser = async (req, res) => {
-  res.send("udpate user");
+  //
+  if (!req.body.name || !req.body.email) {
+    throw new BadRequestError("Name and Email are required !");
+  }
+  console.log("req.user = ", req.user);
+
+  const user = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { name: req.body.name, email: req.body.email },
+    { new: true, runValidators: true }
+  );
+
+  const userPayload = createTokenUser(user);
+
+  // this function attaches cookies to res
+  attachCookiesToResponse(res, userPayload);
+
+  // res is completed with message of successfull registration then sent
+  res
+    .status(StatusCodes.CREATED)
+    .json({ message: "User updated successfully" });
 };
 
 //-----------------------------------------------------------------

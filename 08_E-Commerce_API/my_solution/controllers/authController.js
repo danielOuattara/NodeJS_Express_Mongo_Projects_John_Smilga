@@ -61,7 +61,7 @@ const login = async (req, res) => {
     throw new UnauthenticatedError("User unknown");
   }
 
-  //every thing OK
+  // every thing OK
 
   // gather user data payload + attach cookies to response
   const userPayload = { name: user.name, userId: user._id, role: user.role };
