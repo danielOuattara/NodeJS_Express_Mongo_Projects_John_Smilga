@@ -24,8 +24,8 @@ const attachCookiesToResponse = (res, user) => {
     signed: true,
   });
 };
-//--------------------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------------------
 const destroyCookiesInResponse = (res) => {
   // change the cookie value + make it expire now !
   res.cookie("access_token", "logout requested", {

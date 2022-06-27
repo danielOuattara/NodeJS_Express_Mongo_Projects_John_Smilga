@@ -1,11 +1,10 @@
 const jwt = require("jsonwebtoken");
-const { UnauthenticatedError } = require("./../errors");
+const { UnauthenticatedError, UnauthorizedError } = require("./../errors");
 const User = require("./../models/User");
 const { isTokenValid } = require("./../utilities");
 
 //---------------------------------------------------------------
-const authenticatedUser = async (req, res, next) => {
-  console.log("req = ", req);
+const userAuth = async (req, res, next) => {
   const access_token = req.signedCookies.access_token;
   if (!access_token || !access_token.startsWith("Bearer")) {
     throw new UnauthenticatedError("Request Denied !");
@@ -26,4 +25,13 @@ const authenticatedUser = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticatedUser };
+//--------------------------------------------------------------
+const adminAuth = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    throw new UnauthorizedError("Request Denied! Admin Access Only");
+  }
+  next();
+};
+
+//--------------------------------------------------------------
+module.exports = { userAuth, adminAuth };
