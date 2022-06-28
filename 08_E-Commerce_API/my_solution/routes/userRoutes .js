@@ -10,19 +10,19 @@ const {
 
 const {
   adminAuth,
-  userAuth,
-  authorizedPermissions,
+  tokenAuth,
+  rolePermissions,
 } = require("./../middleware/authentication");
 
 //----------------------------------------------------------------------
 
-router.route("/").get(userAuth, authorizedPermissions("admin"), getAllUsers);
-router.route("/showMe").get(userAuth, showCurrentUser);
+router.route("/").get(tokenAuth, rolePermissions("admin"), getAllUsers);
+router.route("/showMe").get(tokenAuth, showCurrentUser);
 
-router.route("/updateUser").patch(userAuth, updateUser);
-router.route("/updateUserPassword").patch(userAuth, updateUserPassword);
+router.route("/updateUser").patch(tokenAuth, updateUser);
+router.route("/updateUserPassword").patch(tokenAuth, updateUserPassword);
 
-router.route("/:userId").get(userAuth, getSingleUser);
+router.route("/:userId").get(tokenAuth, getSingleUser);
 
 //-----------------------------------------------------------------------
 

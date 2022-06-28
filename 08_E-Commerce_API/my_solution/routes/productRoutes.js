@@ -11,20 +11,26 @@ const {
 
 const {
   adminAuth,
-  userAuth,
-  authorizedPermissions,
+  tokenAuth,
+  rolePermissions,
 } = require("./../middleware/authentication");
 
 //----------------------------------------------------------------------
 
-router.route("/").post(createProduct);
-router.route("/").get(getAllProducts);
+router
+  .route("/")
+  .post([tokenAuth, rolePermissions("admin")], createProduct)
+  .get(getAllProducts);
 
-router.route("/:productId/image").post(uploadImage);
+router
+  .route("/uploadImage")
+  .post([tokenAuth, rolePermissions("admin")], uploadImage);
 
-router.route("/:productId").patch(updateProduct);
-router.route("/:productId").get(getSingleProduct);
-router.route("/:productId").delete(deleteProduct);
+router
+  .route("/:productId")
+  .patch([tokenAuth, rolePermissions("admin")], updateProduct)
+  .get(getSingleProduct)
+  .delete([tokenAuth, rolePermissions("admin")], deleteProduct);
 
 //-----------------------------------------------------------------------
 

@@ -4,7 +4,7 @@ const User = require("./../models/User");
 const { isTokenValid } = require("./../utilities");
 
 //---------------------------------------------------------------
-const userAuth = async (req, res, next) => {
+const tokenAuth = async (req, res, next) => {
   const access_token = req.signedCookies.access_token;
   if (!access_token || !access_token.startsWith("Bearer")) {
     throw new UnauthenticatedError("Request Denied !");
@@ -34,7 +34,7 @@ const adminAuth = (req, res, next) => {
 };
 
 //--------------------------------------------------------------
-const authorizedPermissions = (...roles) => {
+const rolePermissions = (...roles) => {
   return function (req, res, next) {
     if (!roles.includes(req.user.role)) {
       throw new UnauthorizedError("Request Denied! Admin Access Only");
@@ -44,4 +44,4 @@ const authorizedPermissions = (...roles) => {
 };
 
 //--------------------------------------------------------------
-module.exports = { userAuth, adminAuth, authorizedPermissions };
+module.exports = { tokenAuth, adminAuth, rolePermissions };
