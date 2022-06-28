@@ -1,39 +1,37 @@
 const Product = require("./../models/Product");
 const User = require("./../models/User");
-const {
-  BadRequestError,
-  NotFoundError,
-  UnauthenticatedError,
-  CustomAPIError,
-} = require("./../errors");
+const { CustomAPIError } = require("./../errors");
+const { StatusCodes } = require("http-status-codes");
 
 //------------------------------------------------------------------
-const createProduct = (req, res) => {
-  res.send("create product");
+const createProduct = async (req, res) => {
+  req.body.user = req.user._id;
+  const product = await Product.create(req.body);
+  res.status(StatusCodes.CREATED).json({ product });
 };
 
 //------------------------------------------------------------------
-const getAllProducts = (req, res) => {
+const getAllProducts = async (req, res) => {
   res.send("all product");
 };
 
 //------------------------------------------------------------------
-const getSingleProduct = (req, res) => {
+const getSingleProduct = async (req, res) => {
   res.send("get single product");
 };
 
 //------------------------------------------------------------------
-const updateProduct = (req, res) => {
+const updateProduct = async (req, res) => {
   res.send("update product");
 };
 
 //------------------------------------------------------------------
-const deleteProduct = (req, res) => {
+const deleteProduct = async (req, res) => {
   res.send("delete product");
 };
 
 //------------------------------------------------------------------
-const uploadImage = (req, res) => {
+const uploadImage = async (req, res) => {
   res.send("upload image");
 };
 
