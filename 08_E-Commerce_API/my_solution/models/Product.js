@@ -15,6 +15,7 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       maxLength: 50,
       required: [true, "Price value is required !"],
+      default: 0,
     },
     description: {
       type: String,
@@ -36,11 +37,12 @@ const ProductSchema = new mongoose.Schema(
       required: [true, "Product category is required !"],
       enum: {
         values: ["ikea", "liddy", "marcos"],
-        message: "{VALUE} is not suported",
+        message: "{VALUE} is not suported as company name",
       },
     },
     colors: {
       type: [String],
+      default: ["#222"],
       required: [true, "Product color is required !"],
     },
     featured: {
@@ -60,7 +62,7 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    owner: {
+    user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
