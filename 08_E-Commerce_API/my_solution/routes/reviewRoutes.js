@@ -14,14 +14,14 @@ const { tokenAuth, rolePermissions } = require("../middleware/authentication");
 
 router
   .route("/")
-  .post([tokenAuth, rolePermissions("admin")], createReview)
+  .post([tokenAuth, rolePermissions("user", "admin")], createReview)
   .get(getAllReviews);
 
 router
   .route("/:reviewId")
   .get(getSingleReview)
-  .patch([tokenAuth, rolePermissions("admin")], updateReview)
-  .delete([tokenAuth, rolePermissions("admin")], deleteReview);
+  .patch([tokenAuth, rolePermissions("user", "admin")], updateReview)
+  .delete([tokenAuth, rolePermissions("user", "admin")], deleteReview);
 
 //-----------------------------------------------------------------------
 
