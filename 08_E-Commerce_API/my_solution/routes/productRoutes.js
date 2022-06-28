@@ -28,8 +28,8 @@ router
 
 router
   .route("/:productId")
-  .patch([tokenAuth, rolePermissions("admin")], updateProduct)
   .get(getSingleProduct)
+  .patch([tokenAuth, rolePermissions("admin")], updateProduct)
   .delete([tokenAuth, rolePermissions("admin")], deleteProduct);
 
 //-----------------------------------------------------------------------
