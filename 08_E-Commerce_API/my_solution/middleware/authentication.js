@@ -25,13 +25,13 @@ const tokenAuth = async (req, res, next) => {
   }
 };
 
-//--------------------------------------------------------------
-const adminAuth = (req, res, next) => {
-  if (req.user.role !== "admin") {
-    throw new UnauthorizedError("Request Denied! Admin Access Only");
-  }
-  next();
-};
+// //--------------------------------------------------------------
+// const adminAuth = (req, res, next) => {
+//   if (req.user.role !== "admin") {
+//     throw new UnauthorizedError("Request Denied! Admin Access Only");
+//   }
+//   next();
+// };
 
 //--------------------------------------------------------------
 const rolePermissions = (...roles) => {
@@ -44,4 +44,4 @@ const rolePermissions = (...roles) => {
 };
 
 //--------------------------------------------------------------
-module.exports = { tokenAuth, adminAuth, rolePermissions };
+module.exports = { tokenAuth, /* adminAuth, */ rolePermissions };

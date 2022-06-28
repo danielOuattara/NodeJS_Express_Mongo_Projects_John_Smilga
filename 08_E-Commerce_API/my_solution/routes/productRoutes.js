@@ -10,7 +10,6 @@ const {
 } = require("./../controllers/productController");
 
 const {
-  adminAuth,
   tokenAuth,
   rolePermissions,
 } = require("./../middleware/authentication");
