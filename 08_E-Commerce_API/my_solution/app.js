@@ -8,6 +8,7 @@ const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const fileUpload = require("express-fileupload");
 // error handler
 
 // app.use(morgan("combined"))
@@ -15,8 +16,8 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET)); // <-- signing cookie
 
-// app.use(express.static("./public")); // for later user
-
+app.use(express.static("./public")); // for later user
+app.use(fileUpload());
 app.get("/api/v1", (req, res) => {
   // console.log(req.cookies); // <-- accessing non signed cookies
   console.log(req.signedCookies); // <-- accessing signed cookies

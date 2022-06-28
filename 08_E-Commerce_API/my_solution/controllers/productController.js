@@ -2,7 +2,8 @@ const Product = require("./../models/Product");
 const User = require("./../models/User");
 const CustomError = require("./../errors");
 const { StatusCodes } = require("http-status-codes");
-
+const path = require("path");
+const { join } = require("path");
 //------------------------------------------------------------------
 const createProduct = async (req, res) => {
   req.body.user = req.user._id;
@@ -54,7 +55,24 @@ const deleteProduct = async (req, res) => {
 
 //------------------------------------------------------------------
 const uploadImage = async (req, res) => {
-  res.send("upload image");
+  if (
+    !req.files || // check file is upload
+    !req.files.image.mimetype.startsWith("image") || // check image
+    req.files.image.size > 1024 * 1024 // check size
+  ) {
+    throw new CustomError.BadRequestError(
+      "Image file only required with max size 1Mb"
+    );
+  }
+  const imagePath = path.join(
+    __dirname,
+    "./../public/uploads/" + `${req.files.image.name}`
+  );
+  await req.files.image.mv(imagePath);
+
+  res
+    .status(StatusCodes.OK)
+    .json({ image: `/uploads/${req.files.image.name}` });
 };
 
 //------------------------------------------------------------------
