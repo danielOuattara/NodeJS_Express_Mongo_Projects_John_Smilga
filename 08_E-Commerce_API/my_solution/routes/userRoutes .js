@@ -9,7 +9,6 @@ const {
 } = require("./../controllers/userController");
 
 const {
-  adminAuth,
   tokenAuth,
   rolePermissions,
 } = require("./../middleware/authentication");
