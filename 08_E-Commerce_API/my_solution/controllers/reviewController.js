@@ -7,14 +7,15 @@ const { checkPermissions } = require("../utilities");
 
 //---------------------------------------------------------------------
 const createReview = async (req, res) => {
-  const product = await Product.findById(req.body.productId);
+  //
+  const product = await Product.findById(req.body.product);
   if (!product) {
     throw new CustomError.NotFoundError("Product unknown");
   }
 
   const oldReview = await Review.findOne({
-    productId: req.body.productId,
-    userId: req.user._id,
+    product: req.body.product,
+    user: req.user._id,
   });
   if (oldReview) {
     throw new CustomError.BadRequestError(
@@ -22,7 +23,7 @@ const createReview = async (req, res) => {
     );
   }
 
-  req.body.userId = req.user._id;
+  req.body.user = req.user._id;
   const review = await Review.create(req.body);
 
   res
@@ -32,13 +33,29 @@ const createReview = async (req, res) => {
 
 //---------------------------------------------------------------------
 const getAllReviews = async (req, res) => {
-  const reviews = await Review.find({});
+  const reviews = await Review.find({})
+    .populate({
+      path: "product",
+      select: "name company category image price description",
+    })
+    .populate({
+      path: "user",
+      select: "-_id name",
+    });
   res.status(StatusCodes.OK).json({ count: reviews.length, reviews });
 };
 
 //---------------------------------------------------------------------
 const getSingleReview = async (req, res) => {
-  const review = await Review.findById(req.params.reviewId);
+  const review = await Review.findById(req.params.reviewId)
+    .populate({
+      path: "product",
+      select: "name company category image price description",
+    })
+    .populate({
+      path: "user",
+      select: "-_id name",
+    });
 
   if (!review) {
     throw new CustomError.BadRequestError(`review unknown`);
@@ -59,7 +76,10 @@ const updateReview = async (req, res) => {
   if (!review) {
     throw new CustomError.BadRequestError(`review unknown`);
   }
-  checkPermissions(req.user, review.userId);
+
+  console.log("req.user = ", req.user);
+  console.log("review.user =", review.user);
+  checkPermissions(req.user, review.user);
 
   review.title = req.body.title;
   review.rating = req.body.rating;
