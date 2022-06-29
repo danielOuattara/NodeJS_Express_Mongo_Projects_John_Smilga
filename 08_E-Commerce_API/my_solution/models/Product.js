@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const Review = require("./Reviews");
 
 //----------------------------------------------------------------
 const ProductSchema = new mongoose.Schema(
@@ -68,8 +69,22 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    // 1 : set properties to accept virtuals,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+// 2 : define links parameters
+ProductSchema.virtual("reviews", {
+  ref: "Review", // ref to the Model name
+  localField: "_id", // a connection btw. the two models
+  foreignField: "product", // the field in the ref above
+  justOne: false, // to get a list
+  match: { rating: 2 }, // match docs where rating = 5
+});
 
 //----------------------------------------------------------------
 module.exports = mongoose.model("Product", ProductSchema);

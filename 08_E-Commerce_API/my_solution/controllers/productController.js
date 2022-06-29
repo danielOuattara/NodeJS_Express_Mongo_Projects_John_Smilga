@@ -3,7 +3,6 @@ const User = require("./../models/User");
 const CustomError = require("./../errors");
 const { StatusCodes } = require("http-status-codes");
 const path = require("path");
-const { join } = require("path");
 //------------------------------------------------------------------
 const createProduct = async (req, res) => {
   req.body.user = req.user._id;
@@ -19,7 +18,9 @@ const getAllProducts = async (req, res) => {
 
 //------------------------------------------------------------------
 const getSingleProduct = async (req, res) => {
-  const product = await Product.findById(req.params.productId);
+  const product = await Product.findById(req.params.productId).populate(
+    "reviews"
+  );
   if (!product) {
     throw new CustomError.NotFoundError("Product not found");
   }
@@ -50,7 +51,9 @@ const deleteProduct = async (req, res) => {
   }
 
   await product.remove();
-  res.status(StatusCodes.OK).json({ message: "Product deleted successfully" });
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "Product deleted successfully" });
 };
 
 //------------------------------------------------------------------
