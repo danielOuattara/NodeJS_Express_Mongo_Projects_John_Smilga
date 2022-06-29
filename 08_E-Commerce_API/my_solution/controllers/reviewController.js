@@ -77,10 +77,7 @@ const updateReview = async (req, res) => {
     throw new CustomError.BadRequestError(`review unknown`);
   }
 
-  console.log("req.user = ", req.user);
-  console.log("review.user =", review.user);
   checkPermissions(req.user, review.user);
-
   review.title = req.body.title;
   review.rating = req.body.rating;
   review.comment = req.body.comment;
