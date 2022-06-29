@@ -55,6 +55,15 @@ const deleteProduct = async (req, res) => {
     .status(StatusCodes.OK)
     .json({ message: "Product deleted successfully" });
 };
+//------------------------------------------------------------------
+
+// TODO: find a way to delete all products and every subdocument(s) related to
+// const adminDeleteAllProducts = async (req, res) => {
+//   const products = await Product.deleteMany({});
+//   res
+//     .status(StatusCodes.OK)
+//     .json({ message: " All Products deleted successfully" });
+// };
 
 //------------------------------------------------------------------
 const uploadImage = async (req, res) => {
@@ -86,4 +95,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   uploadImage,
+  // adminDeleteAllProducts,
 };
