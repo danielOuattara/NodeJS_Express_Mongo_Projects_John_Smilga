@@ -84,7 +84,11 @@ ProductSchema.virtual("reviews", {
   foreignField: "product", // the field in the ref above
   justOne: false, // to get a list
   match: { rating: 2 }, // match docs where rating = 5
+  match: {}, // match docs where rating = 5
 });
 
+ProductSchema.pre("remove", async function (next) {
+  await this.model("Review").deleteMany({ product: this._id });
+});
 //----------------------------------------------------------------
 module.exports = mongoose.model("Product", ProductSchema);
