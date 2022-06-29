@@ -63,7 +63,7 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    numberOfreviews: {
+    numberOfReviews: {
       type: Number,
       default:0,
     },
