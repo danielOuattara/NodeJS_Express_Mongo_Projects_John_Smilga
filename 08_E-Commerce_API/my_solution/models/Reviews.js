@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
-const User = require("./Product");
-const Product = require("./Product");
 
 //----------------------------------------------------------------
 const ReviewSchema = new mongoose.Schema(
@@ -20,6 +17,7 @@ const ReviewSchema = new mongoose.Schema(
     },
     comment: {
       type: String,
+      trim: true,
       required: [true, "Please provide a comment"],
       maxLength: [500, "Comment is max 500 characters"],
     },
