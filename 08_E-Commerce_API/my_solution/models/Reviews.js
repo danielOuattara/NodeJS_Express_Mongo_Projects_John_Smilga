@@ -23,12 +23,12 @@ const ReviewSchema = new mongoose.Schema(
       required: [true, "Please provide a comment"],
       maxLength: [500, "Comment is max 500 characters"],
     },
-    user: {
+    userId: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    product: {
+    productId: {
       type: mongoose.Types.ObjectId,
       ref: "Product",
       required: true,
