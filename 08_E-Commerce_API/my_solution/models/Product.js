@@ -63,6 +63,10 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    numberOfreviews: {
+      type: Number,
+      default:0,
+    },
     user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
