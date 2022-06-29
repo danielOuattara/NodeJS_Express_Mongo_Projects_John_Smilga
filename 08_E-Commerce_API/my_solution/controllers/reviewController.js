@@ -54,9 +54,18 @@ const updateReview = async (req, res) => {
 
 //---------------------------------------------------------------------
 const deleteReview = async (req, res) => {
-  res.send("delete review");
+  const review = await Review.findById(req.params.reviewId);
+  if (!review) {
+    throw new CustomError.BadRequestError(`review unknown`);
+  }
+  checkPermissions(req.user, review.userId);
+
+  await review.remove();
+
+  res.json({ message: "delete review" });
 };
 
+//---------------------------------------------------------------------
 module.exports = {
   createReview,
   getAllReviews,
