@@ -14,6 +14,10 @@ const {
   rolePermissions,
 } = require("./../middleware/authentication");
 
+const {
+  getSingleProductReviews,
+} = require("./../controllers/reviewController");
+
 //----------------------------------------------------------------------
 
 router
@@ -31,6 +35,7 @@ router
   .patch([tokenAuth, rolePermissions("admin")], updateProduct)
   .delete([tokenAuth, rolePermissions("admin")], deleteProduct);
 
+router.route("/:productId/reviews").get(getSingleProductReviews);
 //-----------------------------------------------------------------------
 
 module.exports = router;

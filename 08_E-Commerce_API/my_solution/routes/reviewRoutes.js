@@ -6,17 +6,20 @@ const {
   getSingleReview,
   updateReview,
   deleteReview,
+
 } = require("../controllers/reviewController");
 
-const { tokenAuth, rolePermissions } = require("../middleware/authentication");
+const {
+  tokenAuth,
+  rolePermissions,
+} = require("../middleware/authentication");
 
 //----------------------------------------------------------------------
 
-router.route("/")
-  .post(tokenAuth, createReview)
-  .get(getAllReviews);
+router.route("/").post(tokenAuth, createReview).get(getAllReviews);
 
-router.route("/:reviewId")
+router
+  .route("/:reviewId")
   .get(getSingleReview)
   .patch(tokenAuth, updateReview)
   .delete(tokenAuth, deleteReview);

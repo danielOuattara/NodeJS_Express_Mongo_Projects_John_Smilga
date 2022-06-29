@@ -103,10 +103,18 @@ const deleteReview = async (req, res) => {
 };
 
 //---------------------------------------------------------------------
+const getSingleProductReviews = async (req, res) => {
+  const reviews = await Review.find({ product: req.params.productId });
+
+  res.status(StatusCodes.OK).json({ count: reviews.length, reviews });
+};
+
+//---------------------------------------------------------------------
 module.exports = {
   createReview,
   getAllReviews,
   getSingleReview,
   updateReview,
   deleteReview,
+  getSingleProductReviews,
 };
