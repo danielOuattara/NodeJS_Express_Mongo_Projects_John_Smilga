@@ -49,7 +49,24 @@ const getSingleReview = async (req, res) => {
 
 //---------------------------------------------------------------------
 const updateReview = async (req, res) => {
-  res.send("update review");
+  if (!req.body.title || !req.body.rating || !req.body.comment) {
+    throw new CustomError.BadRequestError(
+      `title, rating & comment fields are required`
+    );
+  }
+
+  const review = await Review.findById(req.params.reviewId);
+  if (!review) {
+    throw new CustomError.BadRequestError(`review unknown`);
+  }
+  checkPermissions(req.user, review.userId);
+
+  review.title = req.body.title;
+  review.rating = req.body.rating;
+  review.comment = req.body.comment;
+  await review.save();
+
+  res.json({ message: "update review succefuly", review });
 };
 
 //---------------------------------------------------------------------
