@@ -1,0 +1,4 @@
+
+- validate email
+- refresh token
+- setup reset password functionnality
