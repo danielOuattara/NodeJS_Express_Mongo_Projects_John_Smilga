@@ -7,6 +7,7 @@ const {
   updateProduct,
   deleteProduct,
   uploadImage,
+  populateProducts,
   // adminDeleteAllProducts,
 } = require("./../controllers/productController");
 
@@ -21,15 +22,21 @@ const {
 
 //----------------------------------------------------------------------
 
-router.route("/")
+router
+  .route("/")
   .post([tokenAuth, rolePermissions("admin")], createProduct)
-  .get(getAllProducts)
-  // .delete([tokenAuth, rolePermissions("admin")], adminDeleteAllProducts);
+  .get(getAllProducts);
+// .delete([tokenAuth, rolePermissions("admin")], adminDeleteAllProducts);
 
-router.route("/uploadImage")
+router
+  .route("/uploadImage")
   .post([tokenAuth, rolePermissions("admin")], uploadImage);
+router
+  .route("/admin-populate-products")
+  .patch(tokenAuth, rolePermissions("admin"), populateProducts);
 
-router.route("/:productId")
+router
+  .route("/:productId")
   .get(getSingleProduct)
   .patch([tokenAuth, rolePermissions("admin")], updateProduct)
   .delete([tokenAuth, rolePermissions("admin")], deleteProduct);

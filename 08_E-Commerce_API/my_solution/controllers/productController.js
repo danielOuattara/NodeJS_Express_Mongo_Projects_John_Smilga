@@ -3,6 +3,8 @@ const User = require("./../models/User");
 const CustomError = require("./../errors");
 const { StatusCodes } = require("http-status-codes");
 const path = require("path");
+
+const productsJson = require("./../mockData/products.json");
 //------------------------------------------------------------------
 const createProduct = async (req, res) => {
   req.body.user = req.user._id;
@@ -86,6 +88,23 @@ const uploadImage = async (req, res) => {
     .status(StatusCodes.OK)
     .json({ image: `/uploads/${req.files.image.name}` });
 };
+//------------------------------------------------------------------
+// TODO: admin populate products in DB
+const populateProducts = async (req, res) => {
+  productsJson.map((item) => (item.user = req.user._id));
+  const products = await Product.updateMany({
+    $setOnInsert: productsJson,
+    upsert: true,
+    new: true,
+    runValidators: true,
+  });
+  // return await Foo.findOneAndUpdate(
+  //   filter, // find a document with that filter
+  //   { $setOnInsert: fooDoc }, // document to insert when nothing was found
+  //   { upsert: true }
+  // );
+  res.status(StatusCodes.CREATED).json({ products });
+};
 
 //------------------------------------------------------------------
 module.exports = {
@@ -95,5 +114,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   uploadImage,
+  populateProducts,
   // adminDeleteAllProducts,
 };
