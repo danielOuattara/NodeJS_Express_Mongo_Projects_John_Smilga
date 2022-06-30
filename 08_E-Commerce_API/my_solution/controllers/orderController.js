@@ -1,9 +1,16 @@
+const Order = require("./../models/Order");
 const Product = require("./../models/Product");
 const User = require("./../models/User");
 const CustomError = require("./../errors");
 const { StatusCodes } = require("http-status-codes");
 const path = require("path");
 const { checkPermissions } = require("../utilities");
+
+//------------------------------------------------------------------
+const fakeStripeAPI = async ({ amount, currency }) => {
+  const client_secret = "some_secret";
+  return { client_secret, amount, currency };
+};
 
 //------------------------------------------------------------------
 const createOrder = async (req, res) => {
@@ -28,7 +35,7 @@ const createOrder = async (req, res) => {
         `${item.name} not found, please chose another product`
       );
     }
-    console.log(productInDB);
+    // console.log(productInDB);
 
     if (productInDB.inventory < 1) {
       throw new CustomError.NotFoundError(
@@ -48,13 +55,31 @@ const createOrder = async (req, res) => {
     // add each valid item to orderItems[]
     orderItems = [...orderItems, singleOrderItem];
 
-    // for each valid item increment
+    // for each valid item increment price
     subTotal += item.amount * price;
   }
 
-  console.log("orderItems = ", orderItems, "\n", "subTotal = ", subTotal);
+  // console.log("orderItems = ", orderItems, "\n", "subTotal = ", subTotal);
 
-  res.send("create order");
+  const total = tax + shippingFee + subTotal;
+  // console.log("total = ", total)
+
+  const paymentIntent = await fakeStripeAPI({
+    amount: total,
+    currency: "EUR",
+  });
+
+  const order = await Order.create({
+    orderItems,
+    total,
+    subTotal,
+    tax,
+    shippingFee,
+    clientSecret: paymentIntent.client_secret,
+    user: req.user._id,
+  });
+
+  res.status(StatusCodes.CREATED).json({ order });
 };
 
 //------------------------------------------------------------------

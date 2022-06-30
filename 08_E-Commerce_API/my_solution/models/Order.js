@@ -4,7 +4,7 @@ const Review = require("./Reviews");
 
 //----------------------------------------------------------------
 
-const SingleCartItemSchema = moongoose.Schema({
+const SingleOrderItemSchema = mongoose.Schema({
   name: { type: String, required: true },
   image: { type: String, required: true },
   price: { type: String, required: true },
@@ -27,7 +27,7 @@ const OrderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    subtotal: {
+    subTotal: {
       type: Number,
       required: true,
     },
@@ -35,7 +35,7 @@ const OrderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    cartItems: [SingleCartItemSchema],
+    orderItems: [SingleOrderItemSchema],
     status: {
       type: String,
       enum: ["pending", "failed", "paid", "delivered", "canceled"],
