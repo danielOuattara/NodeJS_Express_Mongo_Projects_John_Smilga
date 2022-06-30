@@ -84,23 +84,64 @@ const createOrder = async (req, res) => {
 
 //------------------------------------------------------------------
 const getAllOrders = async (req, res) => {
-  res.send("ger all orders");
+  const orders = await Order.find({});
+  if (!orders || orders.length < 1) {
+    throw new CustomError.NotFoundError("No order exists yet !");
+  }
+
+  let totalAmount = 0;
+  orders.map((item) => (totalAmount += item.total));
+
+  res.status(StatusCodes.OK).json({
+    count: orders.length,
+    totalAmount: totalAmount / 100,
+    orders,
+  });
 };
 
 //------------------------------------------------------------------
 const getSingleOrder = async (req, res) => {
-  res.send("get single order");
+  const order = await Order.findById(req.params.orderId);
+  if (order === []) {
+    throw new CustomError.NotFoundError("Order not found !");
+  }
+  checkPermissions(req.user, order.user);
+  res.status(StatusCodes.OK).json({ order });
 };
 
 //------------------------------------------------------------------
 const getCurrentUserOrders = async (req, res) => {
-  res.send("get current user orders");
+  const orders = await Order.find({ user: req.user._id });
+  if (!orders) {
+    throw new CustomError.NotFoundError("Customer has no order yet!");
+  }
+  checkPermissions(req.user, orders[0]?.user);
+
+  let totalAmount = 0;
+  orders.map((item) => (totalAmount += item.total));
+
+  res.status(StatusCodes.OK).json({
+    count: orders.length,
+    totalAmount: totalAmount / 100,
+    orders,
+  });
 };
 
 //------------------------------------------------------------------
 const updateOrder = async (req, res) => {
-  res.send("update order");
+  const order = await Order.findById(req.params.orderId);
+  if (order === []) {
+    throw new CustomError.NotFoundError("Order not found !");
+  }
+  checkPermissions(req.user, order.user);
+
+  order.paymentIntentId = req.body.paymentIntentId;
+  order.status = "paid";
+  await order.save();
+
+  res.status(StatusCodes.OK).json({ order });
 };
+
 //------------------------------------------------------------------
 const deleteOrder = async (req, res) => {
   res.send("delete order");
