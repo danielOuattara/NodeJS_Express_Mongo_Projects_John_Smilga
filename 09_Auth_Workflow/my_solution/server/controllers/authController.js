@@ -38,6 +38,13 @@ const register = async (req, res) => {
 };
 
 //---------------------------------------------------------------
+const verifyEmail = async (req, res) => {
+  const { verificationToken, email } = req.body;
+
+  res.status(StatusCodes.OK).json({ verificationToken, email });
+};
+
+//---------------------------------------------------------------
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -80,6 +87,7 @@ const logout = async (req, res) => {
 //---------------------------------------------------------------
 module.exports = {
   register,
+  verifyEmail,
   login,
   logout,
 };
