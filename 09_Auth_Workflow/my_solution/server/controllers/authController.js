@@ -3,6 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { attachCookiesToResponse, createTokenUser } = require("../utils");
 const crypto = require("crypto");
+const sendEmail = require("./../utils/sendEmail");
 
 //---------------------------------------------------------------
 const register = async (req, res) => {
@@ -30,10 +31,11 @@ const register = async (req, res) => {
     verificationToken,
   });
 
+  await sendEmail()
+
   // send back verificationToken testing backend only
   res.status(StatusCodes.CREATED).json({
     message: "Succes, please check your email box",
-    verificationToken: user.verificationToken,
   });
 };
 
