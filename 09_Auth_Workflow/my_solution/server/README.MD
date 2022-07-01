@@ -28,13 +28,13 @@
 - [x] test in a Postman
 - [x] check for user using email
 - [x] if no user 401
-- [] if token does not match user token 401
-- [] if correct set
-- [] user.isVerified = true
-- [] user.verified = Date.now()
-- [] user.verificationToken = ''
-- [] save user with instance method
-- [] return msg:'email verified'
+- [x] if token does not match user token 401
+- [x] if correct set
+- [x] user.isVerified = true
+- [x] user.verified = Date.now()
+- [x] user.verificationToken = ''
+- [x] save user with instance method
+- [x] return msg:'email verified'
 
 #### Email Setup
 
