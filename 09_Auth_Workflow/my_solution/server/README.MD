@@ -26,14 +26,14 @@
 - [x] get verificationToken and email from req.body
 - [x] setup a '/verify-email' route in authRoutes
 - [x] test in a Postman
-- [] check for user using email
-- [] if no user 401
+- [x] check for user using email
+- [x] if no user 401
 - [] if token does not match user token 401
 - [] if correct set
 - [] user.isVerified = true
 - [] user.verified = Date.now()
 - [] user.verificationToken = ''
-- [] save use with instance method
+- [] save user with instance method
 - [] return msg:'email verified'
 
 #### Email Setup

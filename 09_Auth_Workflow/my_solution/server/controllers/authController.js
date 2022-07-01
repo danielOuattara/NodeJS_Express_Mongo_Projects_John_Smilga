@@ -21,6 +21,7 @@ const register = async (req, res) => {
   const verificationToken = crypto.randomBytes(16).toString("hex");
   console.log("verificationToken  = ", verificationToken);
 
+  // create user
   const user = await User.create({
     name,
     email,
@@ -30,7 +31,6 @@ const register = async (req, res) => {
   });
 
   // send back verificationToken testing backend only
-
   res.status(StatusCodes.CREATED).json({
     message: "Succes, please check your email box",
     verificationToken: user.verificationToken,
@@ -41,7 +41,22 @@ const register = async (req, res) => {
 const verifyEmail = async (req, res) => {
   const { verificationToken, email } = req.body;
 
-  res.status(StatusCodes.OK).json({ verificationToken, email });
+  const user = await User.findOne({ email, verificationToken });
+  if (!user) {
+    throw new CustomError.UnauthenticatedError("Invalid Credentials");
+  }
+
+  user.isVerified = true;
+  user.verified = Date.now();
+  user.verificationToken = "";
+
+  user.save();
+
+  res.status(StatusCodes.OK).json({
+    // verificationToken,
+    // email,
+    message: "Email is verified, you can login now",
+  });
 };
 
 //---------------------------------------------------------------
