@@ -1,11 +1,10 @@
 {
-  "name": "10-e-commerce-api",
+  "name": "09-auth-workflow",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
