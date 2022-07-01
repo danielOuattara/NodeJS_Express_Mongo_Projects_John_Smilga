@@ -2,3 +2,7 @@
 - validate email
 - refresh token
 - setup reset password functionnality
+
+
+* IMPORTANT: For this project, we re-use all the backend code from
+             e-commerce App, and we will refactor it to fit our needs
