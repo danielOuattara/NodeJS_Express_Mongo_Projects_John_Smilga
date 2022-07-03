@@ -18,7 +18,7 @@ const LoginSchema = mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    user: {
+    userId: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
@@ -27,4 +27,4 @@ const LoginSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Log", LoginSchema);
+module.exports = mongoose.model("Login", LoginSchema);
