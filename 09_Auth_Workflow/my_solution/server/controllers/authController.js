@@ -34,7 +34,8 @@ const register = async (req, res) => {
   });
 
   //const origin: `${req.protocol}://${req.get("host")}`,
-  const origin = "http://localhost:3000";
+  // const origin = "http://localhost:3000";
+  const origin = req.get("x-forwarded-host");
 
   await sendVerificationEmail({
     name: user.name,
