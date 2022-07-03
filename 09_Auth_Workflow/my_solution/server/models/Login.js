@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const TokenSchema = mongoose.Schema(
+const LoginSchema = mongoose.Schema(
   {
     refreshToken: {
       type: String,
@@ -15,7 +15,7 @@ const TokenSchema = mongoose.Schema(
       required: true,
     },
     isValid: {
-      type: String,
+      type: Boolean,
       default: true,
     },
     user: {
@@ -27,4 +27,4 @@ const TokenSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Token", TokenSchema);
+module.exports = mongoose.model("Log", LoginSchema);
