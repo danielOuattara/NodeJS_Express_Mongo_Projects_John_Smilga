@@ -1,23 +1,16 @@
 const nodemailer = require("nodemailer");
-
+const nodemailerConfig = require("./nodeMailerConfig");
 //---------------------------------------------------------------
-const sendEmail = async (link) => {
+const sendEmail = async ({ to, subject, html }) => {
   let testAccount = await nodemailer.createTestAccount();
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    auth: {
-      user: "saul.murray78@ethereal.email",
-      pass: "fYW8wkeB2KnnuNsdUn",
-    },
-  });
+  const transporter = nodemailer.createTransport(nodemailerConfig);
 
   let info = await transporter.sendMail({
-    from: '" Admin Registration" <ricatti@gmx.fr>', // sender address
-    to: "admi1@test.Ca", // list of receivers
-    subject: "Email verification upon Login", // Subject line
-    html: `<b>Hello, click the link <a href=${link}>Confirm Email</a></b>`, // html body
+    from: '" Admin Registration" <ricatti@gmx.fr>',
+    to,
+    subject,
+    html,
   });
 
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
