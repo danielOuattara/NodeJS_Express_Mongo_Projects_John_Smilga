@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Token = require("../models/Token");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const {
@@ -97,7 +98,25 @@ const login = async (req, res) => {
   }
 
   const tokenUser = createTokenUser(user);
-  attachCookiesToResponse({ res, user: tokenUser });
+
+  let refreshToken = "";
+
+  // check for existing refreshToken
+
+  // create refreshToken if not previous refreshToken
+  refreshToken = crypto.randomBytes(19).toString("hex");
+
+  const userAgent = req.headers["user-agent"];
+  const ip = req.ip;
+  const userToken = { refreshToken, ip, userAgent, user: user._id };
+
+  const token = await Token.create(userToken);
+
+  attachCookiesToResponse({
+    res,
+    user: tokenUser,
+    refreshToken: token.refreshToken,
+  });
 
   res.status(StatusCodes.OK).json({ user: tokenUser });
 };
