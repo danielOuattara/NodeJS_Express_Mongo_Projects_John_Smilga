@@ -1,5 +1,5 @@
-const User = require("../models/User");
-const Login = require("../models/Login");
+const User = require(".././models/User");
+const Login = require("./../models/Login");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const {
@@ -103,19 +103,30 @@ const login = async (req, res) => {
 
   let refreshToken = "";
 
-  // check for existing refreshToken
-  // TODO
+  // check for existing refreshToken and take correct action
+  const existingUserLogin = await Login.findOne({ userId: user._id });
+
+  if (existingUserLogin && existingUserLogin["isValid"] === false) {
+    throw new CustomError.UnauthenticatedError("Invalid Credentials");
+  }
+
+  if (existingUserLogin && existingUserLogin["isValid"] === true) {
+    attachCookiesToResponse({
+      res,
+      user: userPayload,
+      refreshToken: existingUserLogin.refreshToken,
+    });
+    return res.status(StatusCodes.OK).json({ user: userPayload });
+  }
 
   // create refreshToken if not previous refreshToken
   refreshToken = crypto.randomBytes(19).toString("hex");
 
-  // const userAgent = req.headers["user-agent"];
-  // const ip = req.ip;
   const userLoginPayload = {
     refreshToken,
     ip: req.ip,
     userAgent: req.headers["user-agent"],
-    user: user._id,
+    userId: user._id,
   };
 
   const userLogin = await Login.create(userLoginPayload);
@@ -126,7 +137,7 @@ const login = async (req, res) => {
     refreshToken: userLogin.refreshToken,
   });
 
-  res.status(StatusCodes.OK).json({ user: userPayload });
+  return res.status(StatusCodes.OK).json({ user: userPayload });
 };
 
 //---------------------------------------------------------------
