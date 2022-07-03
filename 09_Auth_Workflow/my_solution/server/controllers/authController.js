@@ -1,10 +1,10 @@
 const User = require("../models/User");
-const Token = require("../models/Token");
+const Login = require("../models/Login");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const {
   attachCookiesToResponse,
-  createTokenUser,
+  // createTokenUser,
   sendVerificationEmail,
 } = require("../utils");
 const crypto = require("crypto");
@@ -65,8 +65,6 @@ const verifyEmail = async (req, res) => {
   user.save();
 
   res.status(StatusCodes.OK).json({
-    // verificationToken,
-    // email,
     message: "Email is verified, you can login now",
   });
 };
@@ -97,29 +95,40 @@ const login = async (req, res) => {
     throw new CustomError.UnauthenticatedError("Invalid Credentials");
   }
 
-  const tokenUser = createTokenUser(user);
+  const userPayload = {
+    name: user.name,
+    userId: user._id,
+    role: user.role,
+  };
 
   let refreshToken = "";
 
   // check for existing refreshToken
+  // TODO
 
   // create refreshToken if not previous refreshToken
   refreshToken = crypto.randomBytes(19).toString("hex");
 
-  const userAgent = req.headers["user-agent"];
-  const ip = req.ip;
-  const userToken = { refreshToken, ip, userAgent, user: user._id };
+  // const userAgent = req.headers["user-agent"];
+  // const ip = req.ip;
+  const userLoginPayload = {
+    refreshToken,
+    ip: req.ip,
+    userAgent: req.headers["user-agent"],
+    user: user._id,
+  };
 
-  const token = await Token.create(userToken);
+  const userLogin = await Login.create(userLoginPayload);
 
   attachCookiesToResponse({
     res,
-    user: tokenUser,
-    refreshToken: token.refreshToken,
+    user: userPayload,
+    refreshToken: userLogin.refreshToken,
   });
 
-  res.status(StatusCodes.OK).json({ user: tokenUser });
+  res.status(StatusCodes.OK).json({ user: userPayload });
 };
+
 //---------------------------------------------------------------
 const logout = async (req, res) => {
   res.cookie("token", "logout", {
