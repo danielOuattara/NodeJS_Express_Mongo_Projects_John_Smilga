@@ -4,12 +4,12 @@ const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const {
   attachCookiesToResponse,
-  // createTokenUser,
   sendVerificationEmail,
+  sendResetPasswordEmail,
 } = require("../utils");
 const crypto = require("crypto");
 
-//---------------------------------------------------------------
+//---------------------------------------------------------------------------
 const register = async (req, res) => {
   const { email, name, password } = req.body;
 
@@ -50,7 +50,7 @@ const register = async (req, res) => {
   });
 };
 
-//---------------------------------------------------------------
+//---------------------------------------------------------------------------
 const verifyEmail = async (req, res) => {
   const { verificationToken, email } = req.body;
   const user = await User.findOne({ email, verificationToken });
@@ -69,7 +69,7 @@ const verifyEmail = async (req, res) => {
   });
 };
 
-//---------------------------------------------------------------
+//---------------------------------------------------------------------------
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -140,7 +140,7 @@ const login = async (req, res) => {
   return res.status(StatusCodes.OK).json({ user: userPayload });
 };
 
-//---------------------------------------------------------------
+//---------------------------------------------------------------------------
 const logout = async (req, res) => {
   await Login.findOneAndDelete({ userId: req.user.userId });
   res.cookie("accessToken", "logout", {
@@ -154,10 +154,50 @@ const logout = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "user logged out!" });
 };
 
-//---------------------------------------------------------------
+//---------------------------------------------------------------------------
+const forgotPassword = async (req, res) => {
+  if (!req.body.email) {
+    throw new CustomError.BadRequestError("Please provide email");
+  }
+
+  const user = await User.findOne({ email: req.body.email });
+  if (user) {
+    // generate verificationToken
+    const passwordToken = crypto.randomBytes(31).toString("hex");
+    const lengthtime = 1000 * 60 * 5; // 5 mins
+    const passwordTokenExpiration = new Date(Date.now() + lengthtime);
+    user.passwordToken = passwordToken;
+    user.passwordTokenExpiration = passwordTokenExpiration;
+    await user.save();
+  }
+
+  //const origin: `${req.protocol}://${req.get("host")}`,
+  // const origin = "http://localhost:3000";
+  const origin = req.get("x-forwarded-host");
+
+  await sendResetPasswordEmail({
+    name: user.name,
+    email: user.email,
+    passwordToken: user.passwordToken,
+    origin,
+  });
+
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: "Please check your email for more instructions" });
+};
+
+//---------------------------------------------------------------------------
+const resetPassword = async (req, res) => {
+  res.send("reset password");
+};
+
+//---------------------------------------------------------------------------
 module.exports = {
   register,
   verifyEmail,
   login,
   logout,
+  forgotPassword,
+  resetPassword,
 };
