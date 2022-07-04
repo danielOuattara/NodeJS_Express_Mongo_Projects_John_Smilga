@@ -6,6 +6,7 @@ const {
   attachCookiesToResponse,
   sendVerificationEmail,
   sendResetPasswordEmail,
+  createHash,
 } = require("../utils");
 const crypto = require("crypto");
 
@@ -34,7 +35,7 @@ const register = async (req, res) => {
     verificationToken,
   });
 
-  //const origin: `${req.protocol}://${req.get("host")}`,
+  // const origin= `${req.protocol}://${req.get("host")}`,
   // const origin = "http://localhost:3000";
   const origin = req.get("x-forwarded-host");
 
@@ -162,25 +163,26 @@ const forgotPassword = async (req, res) => {
 
   const user = await User.findOne({ email: req.body.email });
   if (user) {
-    // generate verificationToken
+    // generate passwordToken
     const passwordToken = crypto.randomBytes(31).toString("hex");
+
     const lengthtime = 1000 * 60 * 5; // 5 mins
     const passwordTokenExpiration = new Date(Date.now() + lengthtime);
-    user.passwordToken = passwordToken;
+
+    const origin = req.get("x-forwarded-host");
+
+    await sendResetPasswordEmail({
+      name: user.name,
+      email: user.email,
+      passwordToken,
+      origin,
+    });
+    // update user infos
+
+    user.passwordToken = createHash(passwordToken);
     user.passwordTokenExpiration = passwordTokenExpiration;
     await user.save();
   }
-
-  //const origin: `${req.protocol}://${req.get("host")}`,
-  // const origin = "http://localhost:3000";
-  const origin = req.get("x-forwarded-host");
-
-  await sendResetPasswordEmail({
-    name: user.name,
-    email: user.email,
-    passwordToken: user.passwordToken,
-    origin,
-  });
 
   res
     .status(StatusCodes.OK)
@@ -189,7 +191,54 @@ const forgotPassword = async (req, res) => {
 
 //---------------------------------------------------------------------------
 const resetPassword = async (req, res) => {
-  res.send("reset password");
+  const { password, passwordConfirm, token, email } = req.body;
+
+  if (!password || !passwordConfirm) {
+    throw new CustomError.BadRequestError(
+      "Please provide both password and confirmation password"
+    );
+  }
+
+  if (password !== passwordConfirm) {
+    throw new CustomError.BadRequestError(
+      "Password and confirmation password must be identical,Please try again"
+    );
+  }
+
+  if (!email || !token) {
+    throw new CustomError.BadRequestError(
+      "Something went wrong, please try again"
+    );
+  }
+
+  // grasp user
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new CustomError.UnauthenticatedError("Invalid Credentials");
+  }
+
+  // check expiration token
+  if (Date.parse(user.passwordTokenExpiration) < Date.now()) {
+    throw new CustomError.BadRequestError(
+      "Token expired, please try again"
+    );
+  }
+
+  if (user.passwordToken !== createHash(token)) {
+    throw new CustomError.UnauthenticatedError(
+      "Invalid Credentials, please try again"
+    );
+  }
+
+  // update user
+  user.password = password;
+  user.passwordToken = "";
+  user.passwordTokenExpiration = "";
+  await user.save();
+
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: "Password update success, you can login now" });
 };
 
 //---------------------------------------------------------------------------
