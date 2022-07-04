@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useHistory, Link } from 'react-router-dom';
-import styled from 'styled-components';
-import axios from 'axios';
-import FormRow from '../components/FormRow';
-import useLocalState from '../utils/localState';
+import React, { useState, useEffect } from "react";
+import { useLocation, useHistory, Link } from "react-router-dom";
+import styled from "styled-components";
+import axios from "axios";
+import FormRow from "../components/FormRow";
+import useLocalState from "../utils/localState";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -11,37 +11,49 @@ function useQuery() {
 
 const ResetPasswordForm = () => {
   const history = useHistory();
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const { alert, showAlert, loading, setLoading, success, setSuccess } =
     useLocalState();
 
   const query = useQuery();
 
-  const handleChange = async (e) => {
-    setPassword(e.target.value);
+  const handleChange = async (e, func) => {
+    func(e.target.value);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (!password) {
-      showAlert({ text: 'please enter password' });
+    if (!password || !passwordConfirm) {
+      showAlert({
+        text: "please enter password and the password confirmation",
+      });
+      setLoading(false);
+      return;
+    }
+    if (password !== passwordConfirm) {
+      showAlert({
+        text: "password and password confirmation must identical, please try again",
+      });
       setLoading(false);
       return;
     }
     try {
-      const { data } = await axios.post('/api/v1/auth/reset-password', {
+      const { data } = await axios.post("/api/v1/auth/reset-password", {
         password,
-        token: query.get('token'),
-        email: query.get('email'),
+        passwordConfirm,
+        token: query.get("token"),
+        email: query.get("email"),
       });
       setLoading(false);
       setSuccess(true);
       showAlert({
         text: `Success, redirecting to login page shortly`,
-        type: 'success',
+        type: "success",
       });
       setTimeout(() => {
-        history.push('/login');
+        history.push("/login");
       }, 3000);
     } catch (error) {
       showAlert({ text: error.response.data.msg });
@@ -49,26 +61,34 @@ const ResetPasswordForm = () => {
     }
   };
   return (
-    <Wrapper className='page'>
+    <Wrapper className="page">
       {alert.show && (
         <div className={`alert alert-${alert.type}`}>{alert.text}</div>
       )}
       {!success && (
         <form
-          className={loading ? 'form form-loading' : 'form'}
+          className={loading ? "form form-loading" : "form"}
           onSubmit={handleSubmit}
         >
           <h4>reset password</h4>
-          {/* single form row */}
           <FormRow
-            type='password'
-            name='password'
+            type="password"
+            name="password"
             value={password}
-            handleChange={handleChange}
+            handleChange={(e) => handleChange(e, setPassword)}
           />
-          {/* end of single form row */}
-          <button type='submit' className='btn btn-block' disabled={loading}>
-            {loading ? 'Please Wait...' : 'New Password'}
+          <FormRow
+            type="password"
+            name="passwordConfirm"
+            value={passwordConfirm}
+            handleChange={(e) => handleChange(e, setPasswordConfirm)}
+          />
+          <button
+            type="submit"
+            className="btn btn-block"
+            disabled={loading}
+          >
+            {loading ? "Please Wait..." : "New Password"}
           </button>
         </form>
       )}
