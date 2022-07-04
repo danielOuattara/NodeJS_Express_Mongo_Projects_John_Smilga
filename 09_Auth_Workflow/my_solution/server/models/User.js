@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
+//------------------------------------------------------------------------
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -38,8 +39,15 @@ const UserSchema = new mongoose.Schema({
   verified: {
     type: Date,
   },
+  passwordToken: {
+    type: String,
+  },
+  passwordTokenExpiration: {
+    type: Date,
+  },
 });
 
+//------------------------------------------------------------------------
 UserSchema.pre("save", async function () {
   // console.log(this.modifiedPaths());
   // console.log(this.isModified('name'));
@@ -48,9 +56,11 @@ UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
+//------------------------------------------------------------------------
 UserSchema.methods.comparePassword = async function (canditatePassword) {
   const isMatch = await bcrypt.compare(canditatePassword, this.password);
   return isMatch;
 };
 
+//------------------------------------------------------------------------
 module.exports = mongoose.model("User", UserSchema);
