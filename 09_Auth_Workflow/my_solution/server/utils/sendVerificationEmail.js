@@ -1,7 +1,7 @@
 const sendEmail = require("./sendEmail");
 
 //------------------------------------------------------------------
-sendVerificationEmail = async ({
+const sendVerificationEmail = async ({
   name,
   email,
   verificationToken,
