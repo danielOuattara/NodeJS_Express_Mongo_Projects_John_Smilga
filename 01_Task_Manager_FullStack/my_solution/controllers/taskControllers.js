@@ -16,7 +16,7 @@
 //     const task = await Task.create(req.body);
 //     res.status(201).send({ task });
 //   } catch (error) {
-//     res.status(400).json(error.message);
+//     res.status(500).json(error.message);
 //   }
 // };
 
@@ -29,12 +29,11 @@
 //     }
 //     return res.status(200).json(task);
 //   } catch (error) {
-//     return res.status(400).json(error.message);
+//     return res.status(500).json(error.message);
 //   }
 // };
 
 // // ---
-
 // exports.getOneTask = async (req, res) => {
 //   try {
 //     const task = await Task.findById(req.params.id);
@@ -47,10 +46,27 @@
 //   }
 // };
 
-// //---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
 // exports.patchTask = async (req, res) => {
 //   try {
-//     const task = await Task.findOneAndUpdate(req.params.id, req.body, {
+//     const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//       runValidators: true,
+//     });
+//     if (!task) {
+//       return res.status(404).json("Task Not Found !");
+//     }
+//     return res.status(200).json({ task });
+//   } catch (error) {
+//     return res.status(404).json(error.name);
+//   }
+// };
+
+//---
+// exports.patchTask = async (req, res) => {
+//   try {
+//     const task = await Task.findOneAndUpdate({ _id: req.params.id }, req.body, {
 //       new: true,
 //       runValidators: true,
 //     });
@@ -77,6 +93,8 @@
 //   }
 // };
 
+//-----
+
 // exports.deleteTask = async (req, res) => {
 //   try {
 //     const task = await Task.findByIdAndDelete(req.params.id);
@@ -91,8 +109,8 @@
 
 //=======================================================================
 
-/*  asyncWrapper function to reduce repetition in controller function 
-------------------------------------------------------------------------*/
+// /*  asyncWrapper function to reduce repetition in controller function
+// ------------------------------------------------------------------------*/
 const Task = require("./../models/task");
 const asyncWrapper = require("./../middlewares/asyncWrapper");
 const { createCustomError } = require("./../errors/customError");
@@ -116,7 +134,7 @@ exports.getOneTask = asyncWrapper(async (req, res, next) => {
   const task = await Task.findById(req.params.id);
   if (!task) {
     // Manual Error setting
-    // const error = new Error('Task Not Found'); 
+    // const error = new Error('Task Not Found');
     // error.status = 404;
     // return next(error)
     return next(createCustomError("Task Not Found !", 404)); // Class Error Generator

@@ -51,7 +51,7 @@ const server = http.createServer(app);
 server.on("error", errorHandler);
 
 server.on("listening", () => {
-/* 
+  /* 
   écouteur d'évènements, également enregistré, consignant le port 
   ou le canal nommé sur lequel le serveur s'exécute dans la console.
 */
@@ -62,7 +62,7 @@ server.on("listening", () => {
 
 connectToDB(process.env.MONGO_URI)
   .then(() => {
-    console.log("Connection to MongoDB:  Success !");
+    console.log("Connection to MongoDB: Success !");
     server.listen(port);
   })
   .catch((err) => console.log(err.message));
