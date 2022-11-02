@@ -5,26 +5,29 @@ const Product = require("./../models/productModel");
 
 //----------------------------------------------------------------------------------------------
 // const getAllProductsStatic = async (req, res) => {
-//     res.status(200).json('product testing route')
-// }
+//   throw new Error("testing async-error-package");
+//   res.status(200).json("product testing route");
+// };
 
 //----------------------------------------------------------------------------------------------
 // const getAllProductsStatic = async (req, res) => {
-//     const products = await Product.find({});
-//     res.status(200).json({numberOfHits: products.length, products})
-// }
+//   const products = await Product.find({});
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
 
 //----------------------------------------------------------------------------------------------
 // const getAllProductsStatic = async (req, res) => {
-//     const featuredProducts = await Product.find({featured: true});
-//     res.status(200).json(featuredProducts)
-// }
+//   const featuredProducts = await Product.find({ featured: true });
+//   res.status(200).json(featuredProducts);
+// };
 
 //----------------------------------------------------------------------------------------------
 // const getAllProductsStatic = async (req, res) => {
-//     const featuredProducts = await Product.find({featured: true});
-//     res.status(200).json({numberOfHits: featuredProducts.length ,featuredProducts})
-// }
+//   const featuredProducts = await Product.find({ featured: true });
+//   res
+//     .status(200)
+//     .json({ numberOfHits: featuredProducts.length, featuredProducts });
+// };
 
 //----------------------------------------------------------------------------------------------
 const getAllProductsStatic = async (req, res) => {
@@ -40,50 +43,56 @@ const getAllProductsStatic = async (req, res) => {
 
 //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
-//         res.status(200).json({ message: 'products route'});
-// }
+//   res.status(200).json({ message: "products route" });
+// };
 
 //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
-//     console.log(req.query);
-//     const products = await Product.find(req.query);
-//     res.status(200).json({numberOfHits: products.length, products});
-// }
+//   console.log(req.query);
+//   const products = await Product.find(req.query);
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
 
 //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
-//     console.log("req.query = ", req.query)
-//     //http://localhost:5000/api/v1/products?featured=true&page=2
-//     // "page" does not exist in the model
-//     const products = await Product.find(req.query);
-//     res.status(200).json({numberOfHits: products.length, products})
-// }
-
-//----------------------------------------------------------------------------------------------
-// const getAllProducts = async (req, res) => {
-//     const { featured } = req.query;
-//     console.log("req.query = ", req.query)
-//     const queryObject= {}; // test for query item first !
-//     if(featured) {
-//     queryObject.featured = featured === 'true' ? true : false;
-//     }
-//     console.log("queryObject = ", queryObject);
-//     const products = await Product.find(queryObject);
-//     res.status(200).json({numberOfHits: products.length, products})
-// }
-
-//----------------------------------------------------------------------------------------------
-// const getAllProducts = async (req, res) => {
-//   const { featured, company } = req.query;
 //   console.log("req.query = ", req.query);
+//   //http://localhost:5000/api/v1/products?featured=true&page=2
+//   // "page" does not exist in the model
+//   const products = await Product.find(req.query);
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
+
+//----------------------------------------------------------------------------------------------
+// const getAllProducts = async (req, res) => {
+//   console.log("req.query = ", req.query);
+//   const { featured } = req.query;
+
+//   const queryObject = {}; // test for query item first !
+//   if (featured) {
+//     queryObject.featured = featured === "true" ? true : false;
+//   }
+
+//   console.log("queryObject = ", queryObject);
+//   const products = await Product.find(queryObject);
+
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
+
+//----------------------------------------------------------------------------------------------
+// const getAllProducts = async (req, res) => {
 //   //http: //localhost:5000/api/v1/products?featured=false&company=ikea
+//   console.log("req.query = ", req.query);
+
+//   const { featured, company } = req.query;
 //   const queryObject = {};
+
 //   if (featured) {
 //     queryObject.featured = featured === "true" ? true : false;
 //   }
 //   if (company) {
 //     queryObject.company = company;
 //   }
+
 //   console.log("queryObject = ", queryObject);
 //   const products = await Product.find(queryObject);
 //   res.status(200).json({
@@ -94,9 +103,10 @@ const getAllProductsStatic = async (req, res) => {
 
 //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
-//   const { featured, company, name } = req.query;
-//   console.log("req.query = ", req.query);
 //   //http: //localhost:5000/api/v1/products?featured=false&company=ikea
+//   console.log("req.query = ", req.query);
+//   const { featured, company, name } = req.query;
+
 //   const queryObject = {};
 //   if (featured) {
 //     queryObject.featured = featured === "true" ? true : false;
@@ -110,7 +120,9 @@ const getAllProductsStatic = async (req, res) => {
 //     // queryObject.name = new RegExp(name + '$', 'i'); // --> ending with name property in the property
 //     queryObject.name = { $regex: name, $options: "i" }; // content name value
 //   }
+
 //   console.log("queryObject = ", queryObject);
+
 //   const products = await Product.find(queryObject);
 //   res.status(200).json({
 //     numberOfHits: products.length,
@@ -134,6 +146,9 @@ const getAllProductsStatic = async (req, res) => {
 ---------- */
 
 // const getAllProducts = async (req, res) => {
+//   // OK !
+//   console.log("req.query = ", req.query);
+
 //   const { featured, company, name, sort } = req.query;
 //   const queryObject = {};
 
@@ -146,8 +161,39 @@ const getAllProductsStatic = async (req, res) => {
 //   }
 
 //   if (name) {
-//     // queryObject.name = name; // looking for exact name
-//     // queryObject.name = new RegExp('^' + name, 'i');
+//     queryObject.name = { $regex: name, $options: "i" }; // content name value
+//   }
+
+//   let sortList = null;
+//   if (sort) {
+//     console.log("sort =", sort);
+//     sortList = sort.replace(/,/gi, " ");
+//     console.log("sortList = ", sortList);
+//   }
+
+//   console.log("queryObject =", queryObject);
+//   const products = await Product.find(queryObject).sort(sortList);
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
+
+//-------
+
+// const getAllProducts = async (req, res) => {
+//   // OK !
+//   console.log("req.query = ", req.query);
+
+//   const { featured, company, name, sort } = req.query;
+//   const queryObject = {};
+
+//   if (featured) {
+//     queryObject.featured = featured === "true" ? true : false;
+//   }
+
+//   if (company) {
+//     queryObject.company = company;
+//   }
+
+//   if (name) {
 //     queryObject.name = { $regex: name, $options: "i" }; // content name value
 //   }
 //   console.log("queryObject =", queryObject);
@@ -175,7 +221,21 @@ const getAllProductsStatic = async (req, res) => {
 -------------------*/
 
 // const getAllProducts = async (req, res) => {
-//   const products = await Product.find({}).select("name price").limit(4);
+//   const products = await Product.find({}).select("name price").limit(9);
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
+
+//---------
+
+// const getAllProducts = async (req, res) => {
+//   const products = await Product.find({}).select("name price").limit(null);
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
+
+//---------
+
+// const getAllProducts = async (req, res) => {
+//   const products = await Product.find({}).select(null).limit(null);
 //   res.status(200).json({ numberOfHits: products.length, products });
 // };
 
@@ -227,6 +287,48 @@ const getAllProductsStatic = async (req, res) => {
 //   res.status(200).json({ numberOfHits: products.length, products });
 // };
 
+//---------
+
+// const getAllProducts = async (req, res) => {
+//   // OK !
+//   console.log("req.query = ", req.query);
+
+//   const { featured, company, name, sort, select } = req.query;
+//   const queryObject = {};
+
+//   if (featured) {
+//     queryObject.featured = featured === "true" ? true : false;
+//   }
+
+//   if (company) {
+//     queryObject.company = company;
+//   }
+
+//   if (name) {
+//     queryObject.name = { $regex: name, $options: "i" }; // content name value
+//   }
+
+//   let sortList = null;
+//   if (sort) {
+//     console.log("sort =", sort);
+//     sortList = sort.replace(/,/gi, " ");
+//     console.log("sortList = ", sortList);
+//   }
+
+//   let selectList = null;
+//   if (select) {
+//     console.log("select", select);
+//     selectList = select.replace(/,/gi, " ");
+//     console.log("selectList = ", selectList);
+//   }
+
+//   console.log("queryObject =", queryObject);
+//   const products = await Product.find(queryObject)
+//     .sort(sortList)
+//     .select(selectList);
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
+
 /* SKIP to SETUP PAGE NUMBER 
 ------------------------------*/
 
@@ -237,7 +339,7 @@ const getAllProductsStatic = async (req, res) => {
 //     .sort("name")
 //     .select("name -_id")
 //     .limit(6)
-//     .skip(20);
+//     .skip(10);
 //   res.status(200).json({ numberOfHits: products.length, products });
 // };
 
@@ -278,6 +380,56 @@ const getAllProductsStatic = async (req, res) => {
 //   res.status(200).json({ numberOfHits: products.length, products });
 // };
 
+//------
+
+// const getAllProducts = async (req, res) => {
+//   // OK !
+//   console.log("req.query = ", req.query);
+
+//   const { featured, company, name, sort, select } = req.query;
+//   const queryObject = {};
+
+//   if (featured) {
+//     queryObject.featured = featured === "true" ? true : false;
+//   }
+
+//   if (company) {
+//     queryObject.company = company;
+//   }
+
+//   if (name) {
+//     queryObject.name = { $regex: name, $options: "i" }; // content name value
+//   }
+
+//   let sortList = null;
+//   if (sort) {
+//     sortList = sort.replace(/,/gi, " ");
+//   }
+
+//   let selectList = null;
+//   if (select) {
+//     selectList = select.replace(/,/gi, " ");
+//   }
+
+//   // pagination setup
+//   const page = Number(req.query.page) || 1;
+//   const limit = Number(req.query.limit) || 7;
+//   const skip = (page - 1) * limit;
+
+//   const allProducts = await Product.find({});
+//   const numberOfArticles = allProducts.length;
+//   const availablePages = Math.ceil(numberOfArticles / limit);
+
+//   const products = await Product.find(queryObject)
+//     .sort(sortList)
+//     .select(selectList)
+//     .skip(skip)
+//     .limit(limit);
+//   res
+//     .status(200)
+//     .json({ numberOfHits: products.length, availablePages, products });
+// };
+
 //----------------------------------------------------------------------------------------------
 /* NUMERIC FILTER 
 --------------------*/
@@ -285,24 +437,100 @@ const getAllProductsStatic = async (req, res) => {
 // const getAllProducts = async (req, res) => {
 //   const products = await Product.find({ price: { $gt: 30 } })
 //     .sort("-price")
-//     .select("name price")
+//     .select("name price");
 //   res.status(200).json({ numberOfHits: products.length, products });
 // };
 
 //----------------------------------------------------------------------------------------------
+// const getAllProducts = async (req, res) => {
+//   const { featured, company, name, sort, fields, numericFilters } = req.query;
+//   const queryObject = {};
+
+//   if (featured) {
+//     queryObject.featured = featured === "true" ? true : false;
+//   }
+//   if (company) {
+//     queryObject.company = company;
+//   }
+//   if (name) {
+//     queryObject.name = { $regex: name, $options: "i" }; // content name value
+//   }
+//   if (numericFilters) {
+//     const operatorsMap = {
+//       ">": "$gt",
+//       ">=": "$gte",
+//       "=": "$eq",
+//       "<": "$lt",
+//       "<=": "$lte",
+//     };
+//     console.log("numericFilters --> ", numericFilters); // numericFilters -->  price<=125,rating>4.5
+//     // const regEx = /(<|<=|=|>=|>)/g; // this is not working: why ???
+//     const regEx = /\b(<|<=|=|>=|>)\b/g;
+//     let filters = numericFilters.replace(
+//       regEx,
+//       (match) => `-${operatorsMap[match]}-`
+//     );
+
+//     console.log("filters -->", filters); // filters --> price-$lte-125,rating-$gt-4.5
+
+//     console.log("splitted ==>", filters.split(",")[0].split("-")); // --> [field, operator, value]
+
+//     const numericFiltersFields = ["price", "rating"]; // predifined in product model (only those ones)
+//     filters = filters.split(",").forEach((item) => {
+//       const [field, operator, value] = item.split("-");
+//       if (numericFiltersFields.includes(field)) {
+//         queryObject[field] = { [operator]: Number(value) };
+//       }
+//     });
+//   }
+//   console.log(queryObject);
+
+//   let result = Product.find(queryObject);
+//   if (sort) {
+//     const sortList = sort.split(",").join(" ");
+//     result = result.sort(sortList);
+//   } else {
+//     result = result.sort("createdAt");
+//   }
+
+//   if (fields) {
+//     console.log(fields);
+//     const fieldsList = fields.split(",").join(" ");
+//     console.log(fieldsList);
+//     result = result.select(fieldsList);
+//   }
+
+//   const page = Number(req.query.page) || 1;
+//   const limit = Number(req.query.limit) || 10;
+//   const skip = (page - 1) * limit;
+//   result = result.skip(skip).limit(limit);
+
+//   // http://localhost:3000/api/v1/products/static?numericFilters=price<20,rating>=4.5
+//   const products = await result;
+//   res.status(200).json({ numberOfHits: products.length, products });
+// };
+
+//------------
+
 const getAllProducts = async (req, res) => {
-  const { featured, company, name, sort, fields, numericFilters } = req.query;
+  // OK !
+  console.log("req.query = ", req.query);
+
+  const { featured, company, name, sort, select, numericFilters } = req.query;
   const queryObject = {};
 
   if (featured) {
     queryObject.featured = featured === "true" ? true : false;
   }
+
   if (company) {
     queryObject.company = company;
   }
+
   if (name) {
     queryObject.name = { $regex: name, $options: "i" }; // content name value
   }
+
   if (numericFilters) {
     const operatorsMap = {
       ">": "$gt",
@@ -311,7 +539,8 @@ const getAllProducts = async (req, res) => {
       "<": "$lt",
       "<=": "$lte",
     };
-    console.log("numericFilters --> ", numericFilters); // numericFilters -->  price<=125,rating>4.5
+    console.log("numericFilters --> ", numericFilters);
+    // numericFilters -->  price<=125,rating>4.5
     // const regEx = /(<|<=|=|>=|>)/g; // this is not working: why ???
     const regEx = /\b(<|<=|=|>=|>)\b/g;
     let filters = numericFilters.replace(
@@ -331,32 +560,36 @@ const getAllProducts = async (req, res) => {
       }
     });
   }
-  console.log(queryObject);
 
-  let result = Product.find(queryObject);
+  let sortList = null;
   if (sort) {
-    const sortList = sort.split(",").join(" ");
-    result = result.sort(sortList);
-  } else {
-    result = result.sort("createdAt");
+    sortList = sort.replace(/,/gi, " ");
   }
 
-  if (fields) {
-    console.log(fields);
-    const fieldsList = fields.split(",").join(" ");
-    console.log(fieldsList);
-    result = result.select(fieldsList);
+  let selectList = null;
+  if (select) {
+    selectList = select.replace(/,/gi, " ");
   }
-
+  // pagination setup
   const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
+  const limit = Number(req.query.limit) || 7;
   const skip = (page - 1) * limit;
-  result = result.skip(skip).limit(limit);
 
-  // http://localhost:3000/api/v1/products/static?numericFilters=price<20,rating>=4.5
-  const products = await result;
-  res.status(200).json({ numberOfHits: products.length, products });
+  const allProducts = await Product.find({});
+  const numberOfArticles = allProducts.length;
+  const availablePages = Math.ceil(numberOfArticles / limit);
+
+  const products = await Product.find(queryObject)
+    .sort(sortList)
+    .select(selectList)
+    .skip(skip)
+    .limit(limit);
+  res
+    .status(200)
+    .json({ numberOfHits: products.length, availablePages, products });
 };
+
+//-------------------------------------------------------------------
 
 module.exports = {
   getAllProductsStatic,

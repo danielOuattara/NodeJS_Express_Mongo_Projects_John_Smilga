@@ -4,24 +4,6 @@ const app = express();
 const productsRouter = require("./routes/productsRoutes");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorMiddleware = require("./middleware/error-handler");
-// const { connectToDB } = require('./database/connect.js');
-
-//----------------------------------------------------------------
-// const start = (async() => {
-//     try {
-//         await connectToDB(process.env.MONGO_URI);
-//         console.log(`Connection to MongoDB:  Success !`);
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// })()
-
-// // start()
-
-// connectToDB(process.env.MONGO_URI)
-// .then(() => console.log('Connection to MongoDB:  Success !'))
-// .catch((err) => console.log(err.message));
-//----------------------------------------------------------------
 
 app.use(express.json());
 
@@ -31,7 +13,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/products", productsRouter); // product routes
+
 app.use(notFoundMiddleware);
+
 app.use(errorMiddleware);
 
 module.exports = app;

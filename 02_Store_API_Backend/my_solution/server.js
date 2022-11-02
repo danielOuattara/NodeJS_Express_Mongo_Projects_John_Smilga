@@ -53,9 +53,27 @@ server.on("listening", () => {
 });
 
 const databseName = process.env.MONGO_URI.split("/")[3].split("?")[0];
+
 connectToDB(process.env.MONGO_URI)
   .then(() => {
     console.log(`Connection to MongoDB ${databseName} database: SUCCESS !`);
     server.listen(port);
   })
   .catch((err) => console.log(err.message));
+
+//----------------------------------------------------------------
+// const start = (async() => {
+//     try {
+//         await connectToDB(process.env.MONGO_URI);
+//         console.log(`Connection to MongoDB:  Success !`);
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// })()
+
+// // start()
+
+// connectToDB(process.env.MONGO_URI)
+// .then(() => console.log('Connection to MongoDB:  Success !'))
+// .catch((err) => console.log(err.message));
+//----------------------------------------------------------------
