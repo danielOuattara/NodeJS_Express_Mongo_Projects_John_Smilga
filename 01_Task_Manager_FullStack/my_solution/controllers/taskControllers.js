@@ -144,7 +144,7 @@ exports.getOneTask = asyncWrapper(async (req, res, next) => {
 
 //---------------------------------------------------------------------
 exports.patchTask = asyncWrapper(async (req, res) => {
-  const task = await Task.findOneAndUpdate(req.params.id, req.body, {
+  const task = await Task.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true,
     runValidators: true,
   });
