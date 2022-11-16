@@ -1,9 +1,11 @@
 require("express-async-errors");
 const express = require("express");
-const app = express();
+// const productsRouter = require("./routes/productsRoutes");
 const productsRouter = require("./routes/productsRoutes");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorMiddleware = require("./middleware/error-handler");
+
+const app = express();
 
 app.use(express.json());
 
@@ -13,9 +15,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/products", productsRouter); // product routes
-
 app.use(notFoundMiddleware);
-
 app.use(errorMiddleware);
 
 module.exports = app;

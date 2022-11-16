@@ -10,10 +10,10 @@ const Product = require("./../models/productModel");
 // };
 
 //----------------------------------------------------------------------------------------------
-// const getAllProductsStatic = async (req, res) => {
-//   const products = await Product.find({});
-//   res.status(200).json({ numberOfHits: products.length, products });
-// };
+const getAllProductsStatic = async (req, res) => {
+  const products = await Product.find({});
+  res.status(200).json({ numberOfHits: products.length, products });
+};
 
 //----------------------------------------------------------------------------------------------
 // const getAllProductsStatic = async (req, res) => {
@@ -30,10 +30,10 @@ const Product = require("./../models/productModel");
 // };
 
 //----------------------------------------------------------------------------------------------
-const getAllProductsStatic = async (req, res) => {
-  const namedProducts = await Product.find({ name: "vase table" });
-  res.status(200).json({ numberOfHits: namedProducts.length, namedProducts });
-};
+// const getAllProductsStatic = async (req, res) => {
+//   const namedProducts = await Product.find({ name: "vase table" });
+//   res.status(200).json({ numberOfHits: namedProducts.length, namedProducts });
+// };
 
 //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
@@ -130,7 +130,7 @@ const getAllProductsStatic = async (req, res) => {
 //   });
 // };
 
-//----------------------------------------------------------------------------------------------
+// //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
 //   console.log(req.query);
 //   //   const products = await Product.find(req.query);
@@ -155,11 +155,9 @@ const getAllProductsStatic = async (req, res) => {
 //   if (featured) {
 //     queryObject.featured = featured === "true" ? true : false;
 //   }
-
 //   if (company) {
 //     queryObject.company = company;
 //   }
-
 //   if (name) {
 //     queryObject.name = { $regex: name, $options: "i" }; // content name value
 //   }
@@ -240,14 +238,13 @@ const getAllProductsStatic = async (req, res) => {
 // };
 
 //----------------------------------------------------------------------------------------------
-/* SELECT & LIMIT  & SKIP */
+/* SELECT & LIMIT  */
 
 // const getAllProducts = async (req, res) => {
 //   const products = await Product.find({})
 //     .sort("name")
 //     .select("name price")
 //     .limit(10)
-//     .skip(3);
 //   res.status(200).json({ numberOfHits: products.length, products });
 // };
 
@@ -256,7 +253,7 @@ const getAllProductsStatic = async (req, res) => {
 ------------------*/
 
 // const getAllProducts = async (req, res) => {
-//   const { featured, company, name, sort, fields } = req.query;
+//   const { featured, company, name, sort, select } = req.query;
 
 //   const queryObject = {};
 
@@ -276,9 +273,9 @@ const getAllProductsStatic = async (req, res) => {
 //     const sortList = sort.split(",").join(" ");
 //     result = result.sort(sortList);
 //   }
-//   if (fields) {
-//     console.log(fields);
-//     const fieldsList = fields.split(",").join(" ");
+//   if (select) {
+//     console.log(select);
+//     const fieldsList = select.split(",").join(" ");
 //     console.log(fieldsList);
 //     result = result.select(fieldsList);
 //   }
@@ -549,7 +546,6 @@ const getAllProducts = async (req, res) => {
     );
 
     console.log("filters -->", filters); // filters --> price-$lte-125,rating-$gt-4.5
-
     console.log("splitted ==>", filters.split(",")[0].split("-")); // --> [field, operator, value]
 
     const numericFiltersFields = ["price", "rating"]; // predifined in product model (only those ones)
@@ -578,6 +574,8 @@ const getAllProducts = async (req, res) => {
   const allProducts = await Product.find({});
   const numberOfArticles = allProducts.length;
   const availablePages = Math.ceil(numberOfArticles / limit);
+
+  console.log("queryObject = ", queryObject);
 
   const products = await Product.find(queryObject)
     .sort(sortList)
