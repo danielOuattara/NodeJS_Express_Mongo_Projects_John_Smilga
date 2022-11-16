@@ -14,6 +14,7 @@
 //     req.user = { id, username };
 //     next();
 //   } catch (error) {
+//     // console.log(error);
 //     throw new CustomAPIError("Not Authorized ! ", 401);
 //   }
 // };
@@ -33,7 +34,7 @@ const authenticationMiddleware = async (req, res, next) => {
   }
   try {
     const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.decode(token, process.env.JWT_SECRET);
     const { id, username } = decoded;
     req.user = { id, username };
     next();
