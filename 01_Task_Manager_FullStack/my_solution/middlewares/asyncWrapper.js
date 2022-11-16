@@ -1,7 +1,21 @@
+// //----------------------------------------------- OK
+// const asyncWrapper = (func) => {
+//   return async (req, res, next) => {
+//     try {
+//       await func(req, res, next);
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+// };
+
+// module.exports = asyncWrapper;
+
+//----------------------------------------------- OK!
 const asyncWrapper = (func) => {
-  return async (req, res, next) => {
+  return (req, res, next) => {
     try {
-      await func(req, res, next);
+      func(req, res, next);
     } catch (error) {
       next(error);
     }
