@@ -46,7 +46,7 @@
 //   }
 // };
 
-//---------------------------------------------------------------------
+// // ---------------------------------------------------------------------
 
 // exports.patchTask = async (req, res) => {
 //   try {
@@ -63,7 +63,7 @@
 //   }
 // };
 
-//---
+// // ---
 // exports.patchTask = async (req, res) => {
 //   try {
 //     const task = await Task.findOneAndUpdate({ _id: req.params.id }, req.body, {
@@ -93,7 +93,7 @@
 //   }
 // };
 
-//-----
+// // -----
 
 // exports.deleteTask = async (req, res) => {
 //   try {
@@ -109,8 +109,8 @@
 
 //=======================================================================
 
-// /*  asyncWrapper function to reduce repetition in controller function
-// ------------------------------------------------------------------------*/
+/*  asyncWrapper function to reduce repetition in controller function
+------------------------------------------------------------------------*/
 const Task = require("./../models/task");
 const asyncWrapper = require("./../middlewares/asyncWrapper");
 const { createCustomError } = require("./../errors/customError");
@@ -123,8 +123,7 @@ exports.getAllTasks = asyncWrapper(async (req, res) => {
 
 //---------------------------------------------------------------------
 exports.createTask = asyncWrapper(async (req, res) => {
-  const { name, completed } = req.body;
-  const task = await Task.create({ name, completed });
+  const task = await Task.create(req.body);
   res.status(201).send({ task });
 });
 
@@ -143,7 +142,7 @@ exports.getOneTask = asyncWrapper(async (req, res, next) => {
 });
 
 //---------------------------------------------------------------------
-exports.patchTask = asyncWrapper(async (req, res) => {
+exports.patchTask = asyncWrapper(async (req, res, next) => {
   const task = await Task.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true,
     runValidators: true,
@@ -156,11 +155,11 @@ exports.patchTask = asyncWrapper(async (req, res) => {
 });
 
 //---------------------------------------------------------------------
-exports.deleteTask = asyncWrapper(async (req, res) => {
+exports.deleteTask = asyncWrapper(async (req, res, next) => {
   const task = await Task.findByIdAndDelete(req.params.id);
   if (!task) {
     return next(createCustomError("Task Not Found !", 404));
   }
-  return res.status(200).send();
+  return res.status(200).send("done!");
   // return res.status(500).json(error.message)
 });
