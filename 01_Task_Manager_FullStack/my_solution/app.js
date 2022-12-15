@@ -16,7 +16,7 @@ const { errorHandler } = require("./middlewares/errorHandler");
 
 app.use(express.static("./public")); // static assets
 app.use(express.urlencoded({ extended: false })); // parse form data
-app.use(express.json()); // parse json
+app.use(express.json()); // parse json data
 
 app.use("/api/v1/tasks", taskRouter);
 app.use(notFound);

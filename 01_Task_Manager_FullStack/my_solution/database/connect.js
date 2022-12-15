@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const connectParams = {
-  /* no more required on Mongoose v6 */
+  /* no more required on Mongoose v6+ */
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,

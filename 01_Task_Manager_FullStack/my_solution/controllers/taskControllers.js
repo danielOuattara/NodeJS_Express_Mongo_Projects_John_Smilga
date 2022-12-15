@@ -32,8 +32,9 @@
 //     return res.status(500).json(error.message);
 //   }
 // };
-
+//
 // // ---
+//
 // exports.getOneTask = async (req, res) => {
 //   try {
 //     const task = await Task.findById(req.params.id);
@@ -128,11 +129,10 @@ exports.createTask = asyncWrapper(async (req, res) => {
 });
 
 //---------------------------------------------------------------------
-
 exports.getOneTask = asyncWrapper(async (req, res, next) => {
   const task = await Task.findById(req.params.id);
   if (!task) {
-    // Manual Error setting
+    // Manual Error settin g
     // const error = new Error('Task Not Found');
     // error.status = 404;
     // return next(error)
@@ -150,7 +150,6 @@ exports.patchTask = asyncWrapper(async (req, res, next) => {
   if (!task) {
     return next(createCustomError("Task Not Found !", 404));
   }
-  console.log("task = ", task);
   return res.status(200).json({ task });
 });
 
