@@ -55,8 +55,8 @@ const getAllProductsStatic = async (req, res) => {
 
 //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
-//   console.log("req.query = ", req.query);
 //   //http://localhost:5000/api/v1/products?featured=true&page=2
+//   console.log("req.query = ", req.query);
 //   // "page" does not exist in the model
 //   const products = await Product.find(req.query);
 //   res.status(200).json({ numberOfHits: products.length, products });
@@ -80,7 +80,7 @@ const getAllProductsStatic = async (req, res) => {
 
 //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
-//   //http: //localhost:5000/api/v1/products?featured=false&company=ikea
+//   //http://localhost:5000/api/v1/products?featured=false&company=ikea
 //   console.log("req.query = ", req.query);
 
 //   const { featured, company } = req.query;
@@ -103,7 +103,7 @@ const getAllProductsStatic = async (req, res) => {
 
 //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
-//   //http: //localhost:5000/api/v1/products?featured=false&company=ikea
+//   //http://localhost:5000/api/v1/products?name=din&featured=false&company=ikea
 //   console.log("req.query = ", req.query);
 //   const { featured, company, name } = req.query;
 
@@ -133,8 +133,8 @@ const getAllProductsStatic = async (req, res) => {
 // //----------------------------------------------------------------------------------------------
 // const getAllProducts = async (req, res) => {
 //   console.log(req.query);
-//   //   const products = await Product.find(req.query);
-//   //   const products = await Product.find({}).sort('name');
+//   // const products = await Product.find(req.query);
+//   // const products = await Product.find({}).sort("name");
 //   //   const products = await Product.find({}).sort('-name');
 //   const products = await Product.find({}).sort("-name -price"); // ...etc
 
@@ -244,13 +244,11 @@ const getAllProductsStatic = async (req, res) => {
 //   const products = await Product.find({})
 //     .sort("name")
 //     .select("name price")
-//     .limit(10)
+//     .limit(10);
 //   res.status(200).json({ numberOfHits: products.length, products });
 // };
 
 //----------------------------------------------------------------------------------------------
-/* SELECT & LIMIT 
-------------------*/
 
 // const getAllProducts = async (req, res) => {
 //   const { featured, company, name, sort, select } = req.query;
@@ -296,11 +294,9 @@ const getAllProductsStatic = async (req, res) => {
 //   if (featured) {
 //     queryObject.featured = featured === "true" ? true : false;
 //   }
-
 //   if (company) {
 //     queryObject.company = company;
 //   }
-
 //   if (name) {
 //     queryObject.name = { $regex: name, $options: "i" }; // content name value
 //   }
@@ -314,7 +310,7 @@ const getAllProductsStatic = async (req, res) => {
 
 //   let selectList = null;
 //   if (select) {
-//     console.log("select", select);
+//     console.log("select = ", select);
 //     selectList = select.replace(/,/gi, " ");
 //     console.log("selectList = ", selectList);
 //   }
@@ -413,18 +409,20 @@ const getAllProductsStatic = async (req, res) => {
 //   const limit = Number(req.query.limit) || 7;
 //   const skip = (page - 1) * limit;
 
-//   const allProducts = await Product.find({});
-//   const numberOfArticles = allProducts.length;
+//   const numberOfArticles = await Product.find(queryObject).countDocuments();
 //   const availablePages = Math.ceil(numberOfArticles / limit);
 
 //   const products = await Product.find(queryObject)
 //     .sort(sortList)
 //     .select(selectList)
-//     .skip(skip)
-//     .limit(limit);
-//   res
-//     .status(200)
-//     .json({ numberOfHits: products.length, availablePages, products });
+//     .limit(limit)
+//     .skip(skip);
+//   res.status(200).json({
+//     numberOfArticles,
+//     availablePages,
+//     actualPage: page,
+//     products,
+//   });
 // };
 
 //----------------------------------------------------------------------------------------------
@@ -519,15 +517,12 @@ const getAllProducts = async (req, res) => {
   if (featured) {
     queryObject.featured = featured === "true" ? true : false;
   }
-
   if (company) {
     queryObject.company = company;
   }
-
   if (name) {
     queryObject.name = { $regex: name, $options: "i" }; // content name value
   }
-
   if (numericFilters) {
     const operatorsMap = {
       ">": "$gt",
@@ -542,20 +537,23 @@ const getAllProducts = async (req, res) => {
     const regEx = /\b(<|<=|=|>=|>)\b/g;
     let filters = numericFilters.replace(
       regEx,
-      (match) => `-${operatorsMap[match]}-`
+      (match) => `-${operatorsMap[match]}-`,
     );
 
     console.log("filters -->", filters); // filters --> price-$lte-125,rating-$gt-4.5
     console.log("splitted ==>", filters.split(",")[0].split("-")); // --> [field, operator, value]
 
     const numericFiltersFields = ["price", "rating"]; // predifined in product model (only those ones)
-    filters = filters.split(",").forEach((item) => {
+    filters.split(",").forEach((item) => {
       const [field, operator, value] = item.split("-");
       if (numericFiltersFields.includes(field)) {
         queryObject[field] = { [operator]: Number(value) };
       }
     });
   }
+
+  console.log("queryObject = ", queryObject);
+  // queryObject =  { featured: false, price: { '$gte': 70 }, rating: { '$gte': 4 } }
 
   let sortList = null;
   if (sort) {
@@ -566,25 +564,26 @@ const getAllProducts = async (req, res) => {
   if (select) {
     selectList = select.replace(/,/gi, " ");
   }
+
   // pagination setup
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 7;
   const skip = (page - 1) * limit;
 
-  const allProducts = await Product.find({});
-  const numberOfArticles = allProducts.length;
+  const numberOfArticles = await Product.find(queryObject).countDocuments();
   const availablePages = Math.ceil(numberOfArticles / limit);
-
-  console.log("queryObject = ", queryObject);
 
   const products = await Product.find(queryObject)
     .sort(sortList)
     .select(selectList)
-    .skip(skip)
-    .limit(limit);
-  res
-    .status(200)
-    .json({ numberOfHits: products.length, availablePages, products });
+    .limit(limit)
+    .skip(skip);
+  res.status(200).json({
+    numberOfArticles,
+    availablePages,
+    actualPage: page,
+    products,
+  });
 };
 
 //-------------------------------------------------------------------

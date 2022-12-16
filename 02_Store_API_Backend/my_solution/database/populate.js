@@ -1,4 +1,5 @@
-require("dotenv").config({ path: "./../.env" });
+// require("dotenv").config({ path: "./../.env" });
+require("dotenv").config();
 const { connectToDB } = require("./connect");
 const Product = require("./../models/productModel");
 const jsonProducts = require("./products.json");
@@ -21,25 +22,21 @@ const jsonProducts = require("./products.json");
 
 //----------------------------------------------------------------
 
-const start = () => {
-  connectToDB(process.env.MONGO_URI)
-    .then(() => {
-      console.log("Connection Success: ready to populate !");
-      return Product.deleteMany({});
-    })
-    .then(() => {
-      return Product.create(jsonProducts);
-    })
-    .then(() => {
-      console.log("Populate : Success !");
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.log({ ERROR: error.message });
-    });
-};
-
-start();
+connectToDB(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Connection Success: ready to populate !");
+    return Product.deleteMany({});
+  })
+  .then(() => {
+    return Product.create(jsonProducts);
+  })
+  .then(() => {
+    console.log("Populate: Success !");
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.log({ ERROR: error.message });
+  });
 
 /*
  Note: 
