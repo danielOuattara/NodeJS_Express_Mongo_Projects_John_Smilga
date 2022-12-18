@@ -1,10 +1,6 @@
-const Job = require("./../models/Job.js");
+const Job = require("../models/Job.js");
 const { StatusCodes } = require("http-status-codes");
-const {
-  BadRequestError,
-  NotFoundError,
-  UnauthenticatedError,
-} = require("./../errors");
+const { generateNotFoundError, generateBadRequestError } = require("../errors");
 
 //----------------------------------------------------------------
 const getAllJobs = async (req, res) => {
@@ -13,17 +9,19 @@ const getAllJobs = async (req, res) => {
 };
 
 //----------------------------------------------------------------
-const getOneJob = async (req, res) => {
+const getOneJob = async (req, res, next) => {
   const job = await Job.findOne({
     _id: req.params.jobId,
     createdBy: req.user._id,
   });
   if (!job) {
-    throw new NotFoundError(
-      `No job found with for ${req.user.name} with id ${req.params.jobId}`
+    return next(
+      generateNotFoundError(
+        `No job found with for ${req.user.name} with id ${req.params.jobId}`,
+      ),
     );
   }
-  res.status(StatusCodes.OK).send({ job });
+  res.status(StatusCodes.OK).json({ job });
 };
 
 //----------------------------------------------------------------
@@ -34,18 +32,22 @@ const createJob = async (req, res) => {
 };
 
 //----------------------------------------------------------------
-const updateJob = async (req, res) => {
+const updateJob = async (req, res, next) => {
   if (!req.body.company || !req.body.position) {
-    throw new BadRequestError("Provide Comapny and Position fields !");
+    return next(
+      generateBadRequestError("Pease, provide Company and Position fields !"),
+    );
   }
   const job = await Job.findOneAndUpdate(
     { _id: req.params.jobId, createdBy: req.user._id },
     req.body,
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
   if (!job) {
-    throw new NotFoundError(
-      `No job found with for ${req.user.name} with id ${req.params.jobId}`
+    return next(
+      generateNotFoundError(
+        `No job found with for ${req.user.name} with id ${req.params.jobId}`,
+      ),
     );
   }
   res.status(StatusCodes.OK).send({ job });
@@ -53,26 +55,24 @@ const updateJob = async (req, res) => {
 
 //----------------------------------------------------------------
 const deleteAllJobs = async (req, res) => {
-  try {
-    await Job.deleteMany();
-    res.status(StatusCodes.OK).send("Jobs Deleted")
-  } catch (error) {
-    console.log(error);
-  }
+  await Job.deleteMany({ createdBy: req.user._id });
+  res.status(StatusCodes.OK).send(" All Jobs Deleted");
 };
 
 //----------------------------------------------------------------
-const deleteOneJob = async (req, res) => {
+const deleteOneJob = async (req, res, next) => {
   const job = await Job.findOneAndDelete({
     _id: req.params.jobId,
     createdBy: req.user._id,
   });
   if (!job) {
-    throw new NotFoundError(
-      `No job found with for ${req.user.name} with id ${req.params.jobId}`
+    return next(
+      generateNotFoundError(
+        `No job found with for ${req.user.name} with id ${req.params.jobId}`,
+      ),
     );
   }
-  res.status(StatusCodes.OK).send(`Job is successfully deleted !`);
+  res.status(StatusCodes.OK).json();
 };
 
 //-----------------------------------------------------------------

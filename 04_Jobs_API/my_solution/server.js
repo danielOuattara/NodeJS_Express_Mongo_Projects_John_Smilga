@@ -5,7 +5,7 @@ const connectDB = require("./db/connect");
 
 //------------------------------------------------------------
 const normalizePort = (val) => {
-  // normalizePort() :  renvoie un port valide, qu'il soit
+  // normalizePort(): renvoie un port valide, qu'il soit
   // fourni sous la forme d'un numéro ou d'une chaîne ;
   const port = parseInt(val, 10);
 

@@ -28,15 +28,7 @@ const JobSchema = new mongoose.Schema(
       required: [true, "Job creator name is required !"],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
-
-// JobSchema.pre('save', async function () {
-
-// })
-
-// JobSchema.methods.getName = function () {
-//     return this.name;
-// }
 
 module.exports = mongoose.model("Job", JobSchema);

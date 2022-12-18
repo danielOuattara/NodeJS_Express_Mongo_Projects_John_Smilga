@@ -33,15 +33,17 @@ const err = {
 //   console.log(key);
 // }
 
+console.log("Object.keys(err.errors)  = ", Object.keys(err.errors));
 
-console.log(Object.keys(err.errors))
+console.log("---------------------------------------------------");
 
-console.log("---------------------------------------------------")
+console.log("Object.values(err.errors) = ", Object.values(err.errors));
 
-console.log(Object.values(err.errors))
+console.log("---------------------------------------------------");
 
-console.log("---------------------------------------------------")
+Object.values(err.errors).map((item) => {
+  console.log(item.message);
+});
 
-Object.values(err.errors).map(item => {
-    console.log(item.message)
-})
+const test = ["hello"];
+console.log(test);
