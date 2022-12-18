@@ -75,9 +75,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    throw new CustomError.BadRequestError(
-      "Please provide email and password"
-    );
+    throw new CustomError.BadRequestError("Please provide email and password");
   }
   const user = await User.findOne({ email });
 
@@ -86,9 +84,7 @@ const login = async (req, res) => {
   }
 
   if (!user.isVerified) {
-    throw new CustomError.UnauthenticatedError(
-      "Please, verify your email"
-    );
+    throw new CustomError.UnauthenticatedError("Please, verify your email");
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
@@ -219,9 +215,7 @@ const resetPassword = async (req, res) => {
 
   // check expiration token
   if (Date.parse(user.passwordTokenExpiration) < Date.now()) {
-    throw new CustomError.BadRequestError(
-      "Token expired, please try again"
-    );
+    throw new CustomError.BadRequestError("Token expired, please try again");
   }
 
   if (user.passwordToken !== createHash(token)) {
