@@ -18,7 +18,9 @@ const jobsRouter = require("./routes/jobs");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 
-app.use(express.static(path.resolve(__dirname, "./client/build")));
+console.log("dirname == ", __dirname);
+
+app.use(express.static(path.resolve(__dirname, "..", "./frontend/build")));
 app.use(express.json());
 app.use(helmet());
 app.use(xss());
@@ -30,7 +32,7 @@ app.use("/api/v1/jobs", authenticateUser, jobsRouter);
 app.get("*", (req, res) => {
   res
     .status(200)
-    .sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+    .sendFile(path.resolve(__dirname, "..", "./frontend/build", "index.html"));
 });
 
 app.use(notFoundMiddleware);
