@@ -1,7 +1,7 @@
-// require("dotenv").config({ path: "./../.env" });
-require("dotenv").config();
-const { connectToDB } = require("./connect");
-const Product = require("./../models/productModel");
+require("dotenv").config({ path: "./../.env" });
+// require("dotenv").config();
+const connectToDB = require("./connect");
+const Job = require("./../models/JobModel");
 const jobsMockData = require("./mock-data.json");
 
 //----------------------------------------------------------------
@@ -9,10 +9,10 @@ const jobsMockData = require("./mock-data.json");
 connectToDB(process.env.MONGO_URI)
   .then(() => {
     console.log("Connection Success: ready to populate !");
-    return Product.deleteMany({});
+    return Job.deleteMany({});
   })
   .then(() => {
-    return Product.create(jobsMockData);
+    return Job.create(jobsMockData);
   })
   .then(() => {
     console.log("Populate: Success !");
