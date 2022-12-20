@@ -6,11 +6,13 @@ const {
   getAllJobs,
   updateJob,
   getJob,
+  showStats,
 } = require("../controllers/jobsControllers");
 const checkTestUser = require("./../middleware/checkTestUser");
 //--------------------------------------------------
 
 router.route("/").post(checkTestUser, createJob).get(getAllJobs);
+router.get("/stats", showStats);
 router
   .route("/:id")
   .get(getJob)
