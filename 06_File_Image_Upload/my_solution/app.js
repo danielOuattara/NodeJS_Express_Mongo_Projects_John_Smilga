@@ -15,9 +15,9 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
+ cloud_name: process.env.CLOUDINARY_NAME,
+ api_key: process.env.CLOUDINARY_KEY,
+ api_secret: process.env.CLOUDINARY_SECRET,
 });
 
 //--------------------------------------------------------------------
@@ -34,14 +34,14 @@ app.use(errorHandlerMiddleware);
 const port = process.env.PORT || 3000;
 
 const start = async () => {
-  try {
-    await connectDB(process.env.MONGO_URI);
-    app.listen(port, () =>
-      console.log(`Server is listening on port http://localhost:${port}/`)
-    );
-  } catch (error) {
-    console.log(error);
-  }
+ try {
+  await connectDB(process.env.MONGO_URI);
+  app.listen(port, () =>
+   console.log(`Server is listening on port http://localhost:${port}/`),
+  );
+ } catch (error) {
+  console.log(error);
+ }
 };
 
 start();
