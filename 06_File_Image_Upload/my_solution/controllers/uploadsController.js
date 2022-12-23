@@ -1,4 +1,4 @@
-const Product = require("./../models/Product");
+const Product = require("../models/ProductModel");
 const { StatusCodes } = require("http-status-codes");
 const path = require("path");
 const CustomErrors = require("./../errors");
@@ -7,23 +7,24 @@ const fs = require("fs");
 
 //---------------------------------------------------------
 // const uploadProductImageLocally = async (req, res, next) => {
-// if (!req.files) {
+//  //locally
+//  if (!req.files) {
 //   throw new CustomErrors.BadRequestError("No File Uploaded");
-// }
-// const productImage = req.files.image;
-// if (!productImage.mimetype.startsWith("image")) {
+//  }
+
+//  const productImage = req.files.image; // an object
+//  if (!productImage.mimetype.startsWith("image")) {
 //   throw new CustomErrors.BadRequestError("Only image can be uploaded");
-// }
-// if (productImage.size > process.env.IMAGE_MAX_SIZE) {
+//  }
+//  if (productImage.size > process.env.IMAGE_MAX_SIZE) {
 //   throw new CustomErrors.BadRequestError("Image max size is 1Mb");
-// }
-// const imagePath = path.join(
+//  }
+//  const imagePath = path.join(
 //   __dirname,
-//   "./../public/uploads/" + `${productImage.name}`
-// );
-// console.log(imagePath);
-// await productImage.mv(imagePath);
-// res
+//   "./../public/uploads/" + `${productImage.name}`,
+//  );
+//  await productImage.mv(imagePath);
+//  res
 //   .status(StatusCodes.CREATED)
 //   .json({ image: { src: `/uploads/${productImage.name}` } });
 // };
@@ -35,7 +36,6 @@ const uploadProductImage = async (req, res, next) => {
  }
 
  const productImage = req.files.image;
-
  if (!productImage.mimetype.startsWith("image")) {
   throw new CustomErrors.BadRequestError("Only image can be uploaded");
  }
@@ -54,4 +54,4 @@ const uploadProductImage = async (req, res, next) => {
 };
 
 //----------------------------------------------------------
-module.exports = { uploadProductImage };
+module.exports = { uploadProductImage /*, uploadProductImageLocally */ };

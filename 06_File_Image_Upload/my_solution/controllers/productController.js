@@ -1,14 +1,14 @@
-const Product = require("./../models/Product");
+const Product = require("../models/ProductModel");
 const { StatusCodes } = require("http-status-codes");
 
 //----------------------------------------------------------
-const createProduct = async (req, res, next) => {
- const product = await Product.create({ ...req.body });
+const createProduct = async (req, res) => {
+ const product = await Product.create(req.body);
  res.status(StatusCodes.CREATED).json({ product });
 };
 
 //----------------------------------------------------------
-const getAllProducts = async (req, res, next) => {
+const getAllProducts = async (req, res) => {
  const products = await Product.find({});
  res.status(StatusCodes.OK).json({ products });
 };
