@@ -2,7 +2,7 @@ const purchase = [
  { id: "1", name: "t-shirt", price: 1999 },
  { id: "2", name: "shoes", price: 4999 },
 ];
-const total_amount = 10998;
+const total_amount = 11997;
 const shipping_fee = 1099;
 
 var stripe = Stripe(
