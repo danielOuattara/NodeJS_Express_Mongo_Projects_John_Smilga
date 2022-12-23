@@ -13,7 +13,7 @@ app.use(express.json());
 
 // routes
 app.get("/", (req, res) => {
-  res.send(`<h1>Email Project </h1> <a href="/send">send email</a>`);
+ res.send(`<h1>Email Project </h1> <a href="/send">send email</a>`);
 });
 
 app.get("/send", sendEmail);
@@ -24,13 +24,13 @@ app.use(errorHandlerMiddleware);
 const port = process.env.PORT || 3000;
 
 const start = async () => {
-  try {
-    app.listen(port, () =>
-      console.log(`Server is listening on port http://localhost:${port}...`)
-    );
-  } catch (error) {
-    console.log(error);
-  }
+ try {
+  app.listen(port, () =>
+   console.log(`Server is listening on port http://localhost:${port}...`),
+  );
+ } catch (error) {
+  console.log(error);
+ }
 };
 
 start();
