@@ -35,7 +35,7 @@ const getAllUsers = async (req, res) => {
 // };
 //
 
-//--- OR
+//--- OR ---
 
 //
 const getSingleUser = async (req, res) => {
@@ -57,20 +57,23 @@ const showCurrentUser = async (req, res) => {
 };
 
 // //-----------------------------------------------------------------
-// const updateUser = async (req, res) => {   <-- findOneAndUpdate()
-//   //
+// const updateUser = async (req, res) => {
+//   /* findOneAndUpdate() method */
+
 //   if (!req.body.name || !req.body.email) {
-//     throw new BadRequestError("Name and Email are required !");
+//     throw new CustomError.BadRequestError("Name and Email are required !");
 //   }
-//   console.log("req.user = ", req.user);
 
 //   const user = await User.findOneAndUpdate(
 //     { _id: req.user._id },
 //     { name: req.body.name, email: req.body.email },
-//     { new: true, runValidators: true }
+//     { new: true, runValidators: true },
 //   );
-
-//   const userPayload = createTokenUser(user);
+//   const userPayload = {
+//     name: user.name,
+//     userId: user._id,
+//     role: user.role,
+//   };
 
 //   // this function attaches cookies to res
 //   attachCookiesToResponse(res, userPayload);
@@ -83,25 +86,65 @@ const showCurrentUser = async (req, res) => {
 
 //--- OR ---
 
+// const updateUser = async (req, res) => {
+//   /* user.save() method */
+
+//   if (!req.body.name || !req.body.email) {
+//     throw new CustomError.BadRequestError("Name and Email are required !");
+//   }
+
+//   const user = await User.findById(req.user._id);
+//   user.name = req.body.name;
+//   user.email = req.body.email;
+
+//   await user.save();
+
+//   //   { name: req.body.name, email: req.body.email },
+//   //   { new: true, runValidators: true }
+//   // );
+
+//   const userPayload = {
+//     name: user.name,
+//     userId: user._id,
+//     role: user.role,
+//   };
+
+//   // this function attaches cookies to res
+//   attachCookiesToResponse(res, userPayload);
+
+//   // res is completed with message of successfull registration then sent
+//   res
+//     .status(StatusCodes.CREATED)
+//     .json({ message: "User updated successfully" });
+// };
+//--- OR ---
+
 const updateUser = async (req, res) => {
-  // <-- user.save() method
-  //
+  /* user.update() method */
+
   if (!req.body.name || !req.body.email) {
-    throw new BadRequestError("Name and Email are required !");
+    throw new CustomError.BadRequestError("Name and Email are required !");
   }
-  console.log("req.user = ", req.user);
 
   const user = await User.findById(req.user._id);
-  user.name = req.body.name;
-  user.email = req.body.email;
 
-  await user.save();
+  if (!user) {
+    throw new CustomError.NotFoundError("User Not Found");
+  }
+  // user.name = req.body.name;
+  // user.email = req.body.email;
+
+  await user.updateOne(req.body, { new: true, runValidators: true });
 
   //   { name: req.body.name, email: req.body.email },
   //   { new: true, runValidators: true }
   // );
 
-  const userPayload = createTokenUser(user);
+  const userPayload = {
+    name: user.name,
+    userId: user._id,
+    role: user.role,
+  };
 
   // this function attaches cookies to res
   attachCookiesToResponse(res, userPayload);
@@ -117,19 +160,19 @@ const updateUserPassword = async (req, res) => {
   //
   // check for passwords in req.body
   if (!req.body.oldPassword || !req.body.newPassword) {
-    throw new BadRequestError("Passwords are required !");
+    throw new CustomError.BadRequestError("Passwords are required !");
   }
 
   // check user exists !
   const user = await User.findOne({ _id: req.user._id });
   if (!user) {
-    throw new UnauthenticatedError("User unknown");
+    throw new CustomError.UnauthenticatedError("User unknown");
   }
 
   // check password !
   const validPassword = await user.checkPassword(req.body.oldPassword);
   if (!validPassword) {
-    throw new UnauthenticatedError("User unknown");
+    throw new CustomError.UnauthenticatedError("User unknown");
   }
 
   //every thing OK
