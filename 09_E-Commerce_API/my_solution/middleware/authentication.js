@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { UnauthenticatedError, UnauthorizedError } = require("./../errors");
-const User = require("./../models/User");
+const User = require("../models/UserModel");
 const { isTokenValid } = require("./../utilities");
 
 //---------------------------------------------------------------

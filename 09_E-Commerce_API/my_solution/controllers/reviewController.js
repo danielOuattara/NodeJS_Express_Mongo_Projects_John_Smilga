@@ -1,6 +1,6 @@
 const Review = require("./../models/Reviews");
 const Product = require("./../models/Product");
-const User = require("./../models/User");
+const User = require("../models/UserModel");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { checkPermissions } = require("../utilities");
@@ -19,7 +19,7 @@ const createReview = async (req, res) => {
   });
   if (oldReview) {
     throw new CustomError.BadRequestError(
-      `Cannot create a new review on this product. But you can update your old review `
+      `Cannot create a new review on this product. But you can update your old review `,
     );
   }
 
@@ -68,7 +68,7 @@ const getSingleReview = async (req, res) => {
 const updateReview = async (req, res) => {
   if (!req.body.title || !req.body.rating || !req.body.comment) {
     throw new CustomError.BadRequestError(
-      `title, rating & comment fields are required`
+      `title, rating & comment fields are required`,
     );
   }
 

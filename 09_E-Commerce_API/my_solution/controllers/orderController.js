@@ -1,6 +1,6 @@
 const Order = require("./../models/Order");
 const Product = require("./../models/Product");
-const User = require("./../models/User");
+const User = require("../models/UserModel");
 const CustomError = require("./../errors");
 const { StatusCodes } = require("http-status-codes");
 const path = require("path");
@@ -21,7 +21,7 @@ const createOrder = async (req, res) => {
   }
   if (!tax || !shippingFee) {
     throw new CustomError.BadRequestError(
-      "Tax and shipping fee are required with exact amount"
+      "Tax and shipping fee are required with exact amount",
     );
   }
 
@@ -32,14 +32,14 @@ const createOrder = async (req, res) => {
     let productInDB = await Product.findById(item.product);
     if (!productInDB) {
       throw new CustomError.NotFoundError(
-        `${item.name} not found, please chose another product`
+        `${item.name} not found, please chose another product`,
       );
     }
     // console.log(productInDB);
 
     if (productInDB.inventory < 1) {
       throw new CustomError.NotFoundError(
-        `${item.name} is out of stock, please chose another product`
+        `${item.name} is out of stock, please chose another product`,
       );
     }
 

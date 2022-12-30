@@ -1,4 +1,4 @@
-const User = require("./../models/User");
+const User = require("../models/UserModel");
 const { StatusCodes } = require("http-status-codes");
 const {
   BadRequestError,
@@ -136,7 +136,7 @@ const getSingleUser = async (req, res) => {
   // <-- John's method
   checkPermissions(req.user, req.params.userId);
   const user = await User.findOne({ _id: req.params.userId }).select(
-    "-password"
+    "-password",
   );
   if (!user) {
     throw new NotFoundError("User Not Found");

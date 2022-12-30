@@ -34,7 +34,7 @@ app.use(
     windowMs: 15 * 60 * 1000,
     max: 60,
     message: { code: 429, message: "Too many connection; Try later !" },
-  })
+  }),
 );
 app.use(helmet());
 app.use(xss());
@@ -43,22 +43,27 @@ app.use(sanitizeExpressMongo());
 // fonctional middlewares
 // app.use(morgan("tiny"));
 app.use(express.json());
+
+//cookies parsing
+// app.use(cookieParser()); // <-- Unsigned cookie
 app.use(cookieParser(process.env.JWT_SECRET)); // <-- signing cookie
 
 app.use(express.static("./public")); // for later user
 app.use(fileUpload());
 
-// app.get("/api/v1", (req, res) => {
-//   // console.log(req.cookies); // <-- accessing non signed cookies
-//   console.log(req.signedCookies); // <-- accessing signed cookies
-//   res.send("Welcome to E-commerce API");
-// });
+app.get("/api/v1", (req, res) => {
+  console.log("req.cookies = ", req.cookies); // <-- accessing unsigned cookies
+  console.log("req.signedCookies = ", req.signedCookies); // <-- accessing signed cookies
+  res.send("Welcome to E-commerce API");
+});
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/orders", orderRouter);
+
+//errors
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

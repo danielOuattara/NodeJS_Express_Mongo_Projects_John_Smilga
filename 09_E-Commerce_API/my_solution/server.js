@@ -63,7 +63,9 @@ server.on("listening", () => {
 
 connectDB(process.env.MONGO_URI)
   .then(() => {
-    console.log("Connection to MongoDB:  Success !");
+    console.log(
+      `Connection to MongoDB  ${process.env.DATABASE_NAME} : Success !`,
+    );
     server.listen(port);
   })
   .catch((err) => console.log(err.message));

@@ -1,36 +1,31 @@
-const User = require("./../models/User");
+const User = require("../models/UserModel");
 const {
   attachCookiesToResponse,
   destroyCookiesInResponse,
-  createTokenUser,
 } = require("./../utilities/index");
 
 const { StatusCodes } = require("http-status-codes");
-const {
-  BadRequestError,
-  UnauthenticatedError,
-  CustomAPIError,
-} = require("./../errors");
+const CustomError = require("./../errors");
 
 //---------------------------------------------------------------------------------------
 const register = async (req, res) => {
-  //
   //check user exists
-  const userExist = await User.findOne({ email: req.body.email });
-  if (userExist) {
-    throw new BadRequestError(
-      "Email address already used. Please, choose another one"
+  const user = await User.findOne({ email: req.body.email });
+  if (user) {
+    throw new CustomError.BadRequestError(
+      "Email address already used. Please, choose another one",
     );
   }
 
   // first registered user should be an admin
-  const isFirstAccount = (await User.countDocuments({})) === 0;
-  const role = isFirstAccount ? "admin" : "user";
+  const role = (await User.countDocuments({})) === 0 ? "admin" : "user";
 
-  const user = await User.create({ ...req.body, role });
-
-  // const userPayload = { name: user.name, userId: user._id, role: user.role };
-  const userPayload = createTokenUser(user);
+  const newUser = await User.create({ ...req.body, role });
+  const userPayload = {
+    name: newUser.name,
+    userId: newUser._id,
+    role: newUser.role,
+  };
 
   // this function attaches cookies to res
   attachCookiesToResponse(res, userPayload);
@@ -46,19 +41,19 @@ const login = async (req, res) => {
   //
   // check email & password presents
   if (!req.body.email || !req.body.password) {
-    throw new BadRequestError("Email and Password are required !");
+    throw new CustomError.BadRequestError("Email and Password are required !");
   }
 
   // check user exists !
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    throw new UnauthenticatedError("User unknown");
+    throw new CustomError.UnauthenticatedError("User unknown");
   }
 
   // check password !
   const validPassword = await user.checkPassword(req.body.password);
   if (!validPassword) {
-    throw new UnauthenticatedError("User unknown");
+    throw new CustomError.UnauthenticatedError("User unknown");
   }
 
   // every thing OK
