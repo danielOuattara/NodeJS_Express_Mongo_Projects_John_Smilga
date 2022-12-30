@@ -6,23 +6,22 @@ const {
   getSingleReview,
   updateReview,
   deleteReview,
-
 } = require("../controllers/reviewController");
 
 const {
-  tokenAuth,
+  tokenAuthentication,
   rolePermissions,
 } = require("../middleware/authentication");
 
 //----------------------------------------------------------------------
 
-router.route("/").post(tokenAuth, createReview).get(getAllReviews);
+router.route("/").post(tokenAuthentication, createReview).get(getAllReviews);
 
 router
   .route("/:reviewId")
   .get(getSingleReview)
-  .patch(tokenAuth, updateReview)
-  .delete(tokenAuth, deleteReview);
+  .patch(tokenAuthentication, updateReview)
+  .delete(tokenAuthentication, deleteReview);
 
 //-----------------------------------------------------------------------
 

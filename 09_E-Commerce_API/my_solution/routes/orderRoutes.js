@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  tokenAuth,
+  tokenAuthentication,
   rolePermissions,
 } = require("./../middleware/authentication");
 const {
@@ -15,16 +15,18 @@ const {
 
 //----------------------------------------------------------------------
 
-router.route("/")
-  .get([tokenAuth, rolePermissions("admin")], getAllOrders)
-  .post(tokenAuth, createOrder);
+router
+  .route("/")
+  .get([tokenAuthentication, rolePermissions("admin")], getAllOrders)
+  .post(tokenAuthentication, createOrder);
 
-router.route("/showAllMyOrders").get(tokenAuth, getCurrentUserOrders);
+router.route("/showAllMyOrders").get(tokenAuthentication, getCurrentUserOrders);
 
-router.route("/:orderId")
-  .get(tokenAuth, getSingleOrder)
-  .patch(tokenAuth, updateOrder)
-  .delete(tokenAuth, deleteOrder);
+router
+  .route("/:orderId")
+  .get(tokenAuthentication, getSingleOrder)
+  .patch(tokenAuthentication, updateOrder)
+  .delete(tokenAuthentication, deleteOrder);
 
 //-----------------------------------------------------------------------
 

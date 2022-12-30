@@ -1,17 +1,17 @@
 const jwt = require("jsonwebtoken");
-const { UnauthenticatedError, UnauthorizedError } = require("./../errors");
+const CustomError = require("./../errors");
 const User = require("../models/UserModel");
 const { isTokenValid } = require("./../utilities");
 
 //---------------------------------------------------------------
-const tokenAuth = async (req, res, next) => {
+const tokenAuthentication = async (req, res, next) => {
   const access_token = req.signedCookies.access_token;
   if (!access_token || !access_token.startsWith("Bearer")) {
-    throw new UnauthenticatedError("Request Denied !");
+    throw new CustomError.UnauthenticatedError("Request Denied !");
   }
-  const token = access_token.split(" ")[1];
 
   try {
+    const token = access_token.split(" ")[1];
     const payload = isTokenValid(token);
 
     // --> Better: register in "req" a complete Mongoose user object
@@ -21,7 +21,7 @@ const tokenAuth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    throw new UnauthenticatedError("Request Denied !");
+    throw new CustomError.UnauthenticatedError("Request Denied !");
   }
 };
 
@@ -37,11 +37,13 @@ const tokenAuth = async (req, res, next) => {
 const rolePermissions = (...roles) => {
   return function (req, res, next) {
     if (!roles.includes(req.user.role)) {
-      throw new UnauthorizedError("Request Denied! Admin Access Only");
+      throw new CustomError.UnauthorizedError(
+        "Request Denied! Admin Access Only",
+      );
     }
     next();
   };
 };
 
 //--------------------------------------------------------------
-module.exports = { tokenAuth, /* adminAuth, */ rolePermissions };
+module.exports = { tokenAuthentication, /* adminAuth, */ rolePermissions };

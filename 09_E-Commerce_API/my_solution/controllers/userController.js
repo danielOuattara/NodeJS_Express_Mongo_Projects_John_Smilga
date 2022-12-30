@@ -1,11 +1,6 @@
 const User = require("../models/UserModel");
 const { StatusCodes } = require("http-status-codes");
-const {
-  BadRequestError,
-  NotFoundError,
-  UnauthenticatedError,
-  CustomAPIError,
-} = require("./../errors");
+const CustomError = require("./../errors");
 
 const {
   createTokenUser,
@@ -14,7 +9,9 @@ const {
 } = require("./../utilities");
 
 //-----------------------------------------------------------------
+// find({filter}, projection)
 const getAllUsers = async (req, res) => {
+  console.log("req.user = ", req.user);
   const users = await User.find({ role: "user" }, "-password");
   res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
 };
@@ -23,6 +20,36 @@ const getAllUsers = async (req, res) => {
 //   const users = await User.find({ role: "user" }).select("-password");
 //   res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
 // };
+
+//-----------------------------------------------------------------
+// const getSingleUser = async (req, res) => {  // <-- my method: Working  !
+// if (req.user._id !== req.params.userId && req.user.role !== "admin") {
+//   throw new UnauthenticatedError("Access denied");
+// }
+// const user = await User.findOne({ _id: req.params.userId }).select("-password");
+// if (!user) {
+//   throw new CustomError.NotFoundError("User Not Found");
+// }
+
+// res.status(StatusCodes.OK).json({ user });
+// };
+//
+
+//--- OR
+
+//
+const getSingleUser = async (req, res) => {
+  // <-- John's method
+  checkPermissions(req.user, req.params.userId);
+  const user = await User.findOne({ _id: req.params.userId }).select(
+    "-password",
+  );
+  if (!user) {
+    throw new CustomError.NotFoundError("User Not Found");
+  }
+
+  res.status(StatusCodes.OK).json({ user });
+};
 
 //-----------------------------------------------------------------
 const showCurrentUser = async (req, res) => {
@@ -111,38 +138,6 @@ const updateUserPassword = async (req, res) => {
 
   // send back reponse to user
   res.status(StatusCodes.OK).json({ message: "Password successfully updated" });
-};
-
-//-----------------------------------------------------------------
-// const getSingleUser = async (req, res) => {  // <-- my method: Working  !
-//   if (req.user._id !== req.params.userId && req.user.role !== "admin") {
-//     throw new UnauthenticatedError("Access denied");
-//   }
-//   const user = await User.findOne({ _id: req.params.userId }).select(
-//     "-password"
-//   );
-//   if (!user) {
-//     throw new NotFoundError("User Not Found");
-//   }
-
-//   res.status(StatusCodes.OK).json({ user });
-// };
-//
-
-//--- OR
-
-//
-const getSingleUser = async (req, res) => {
-  // <-- John's method
-  checkPermissions(req.user, req.params.userId);
-  const user = await User.findOne({ _id: req.params.userId }).select(
-    "-password",
-  );
-  if (!user) {
-    throw new NotFoundError("User Not Found");
-  }
-
-  res.status(StatusCodes.OK).json({ user });
 };
 
 //-----------------------------------------------------------------

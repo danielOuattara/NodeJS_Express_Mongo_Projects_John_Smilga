@@ -9,19 +9,23 @@ const {
 } = require("./../controllers/userController");
 
 const {
-  tokenAuth,
+  tokenAuthentication,
   rolePermissions,
 } = require("./../middleware/authentication");
 
 //----------------------------------------------------------------------
 
-router.route("/").get(tokenAuth, rolePermissions("admin"), getAllUsers);
-router.route("/showMe").get(tokenAuth, showCurrentUser);
+router
+  .route("/")
+  .get(tokenAuthentication, rolePermissions("admin"), getAllUsers);
+router.route("/showMe").get(tokenAuthentication, showCurrentUser);
 
-router.route("/updateUser").patch(tokenAuth, updateUser);
-router.route("/updateUserPassword").patch(tokenAuth, updateUserPassword);
+router.route("/updateUser").patch(tokenAuthentication, updateUser);
+router
+  .route("/updateUserPassword")
+  .patch(tokenAuthentication, updateUserPassword);
 
-router.route("/:userId").get(tokenAuth, getSingleUser);
+router.route("/:userId").get(tokenAuthentication, getSingleUser);
 
 //-----------------------------------------------------------------------
 
