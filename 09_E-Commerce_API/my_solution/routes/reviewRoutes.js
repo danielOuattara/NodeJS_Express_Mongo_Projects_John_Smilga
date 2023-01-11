@@ -8,10 +8,7 @@ const {
   deleteReview,
 } = require("../controllers/reviewController");
 
-const {
-  tokenAuthentication,
-  rolePermissions,
-} = require("../middleware/authentication");
+const { tokenAuthentication } = require("../middleware/authentication");
 
 //----------------------------------------------------------------------
 
