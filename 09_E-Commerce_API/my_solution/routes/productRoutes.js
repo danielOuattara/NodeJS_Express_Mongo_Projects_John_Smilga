@@ -6,13 +6,14 @@ const {
   getSingleProduct,
   updateProduct,
   deleteProduct,
+  deleteAllProducts,
   uploadImage,
   populateProducts,
   // adminDeleteAllProducts,
 } = require("./../controllers/productController");
 
 const {
-  tokenAuthentication,
+  tokenAuthentication: tokenAuth,
   rolePermissions,
 } = require("./../middleware/authentication");
 
@@ -24,22 +25,27 @@ const {
 
 router
   .route("/")
-  .post([tokenAuthentication, rolePermissions("admin")], createProduct)
+  .post([tokenAuth, rolePermissions("admin")], createProduct)
   .get(getAllProducts);
-// .delete([tokenAuthentication, rolePermissions("admin")], adminDeleteAllProducts);
+// .delete([tokenAuth, rolePermissions("admin")], adminDeleteAllProducts);
 
 router
   .route("/uploadImage")
-  .post([tokenAuthentication, rolePermissions("admin")], uploadImage);
+  .post([tokenAuth, rolePermissions("admin")], uploadImage);
+
 router
   .route("/admin-populate-products")
-  .patch(tokenAuthentication, rolePermissions("admin"), populateProducts);
+  .patch(tokenAuth, rolePermissions("admin"), populateProducts);
+
+router
+  .route("/")
+  .delete(tokenAuth, rolePermissions("admin"), deleteAllProducts);
 
 router
   .route("/:productId")
   .get(getSingleProduct)
-  .patch([tokenAuthentication, rolePermissions("admin")], updateProduct)
-  .delete([tokenAuthentication, rolePermissions("admin")], deleteProduct);
+  .patch([tokenAuth, rolePermissions("admin")], updateProduct)
+  .delete([tokenAuth, rolePermissions("admin")], deleteProduct);
 
 router.route("/:productId/reviews").get(getSingleProductReviews);
 //-----------------------------------------------------------------------
