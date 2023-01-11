@@ -32,11 +32,11 @@ const ReviewSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 //----------------------------------------------------------------
-// Only One review by user on a product
+// Only One review by user and by product
 ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
 //----------------------------------------------------------------
@@ -46,7 +46,7 @@ ReviewSchema.statics.calculateAverageRating = async function (productId) {
     { $match: { product: productId } },
     {
       $group: {
-        _id: null,
+        _id: productId,
         averageRating: { $avg: "$rating" },
         numberOfReviews: { $sum: 1 },
       },
@@ -60,7 +60,7 @@ ReviewSchema.statics.calculateAverageRating = async function (productId) {
       {
         averageRating: result[0]?.averageRating.toFixed(1) || 0,
         numberOfReviews: result[0]?.numberOfReviews || 0,
-      }
+      },
     );
   } catch (error) {
     console.log(error);
