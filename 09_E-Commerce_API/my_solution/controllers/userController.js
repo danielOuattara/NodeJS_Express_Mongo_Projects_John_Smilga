@@ -11,7 +11,6 @@ const {
 //-----------------------------------------------------------------
 // find({filter}, projection)
 const getAllUsers = async (req, res) => {
-  console.log("req.user = ", req.user);
   const users = await User.find({ role: "user" }, "-password");
   res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
 };
@@ -22,24 +21,25 @@ const getAllUsers = async (req, res) => {
 // };
 
 //-----------------------------------------------------------------
-// const getSingleUser = async (req, res) => {  // <-- my method: Working  !
-// if (req.user._id !== req.params.userId && req.user.role !== "admin") {
-//   throw new UnauthenticatedError("Access denied");
-// }
-// const user = await User.findOne({ _id: req.params.userId }).select("-password");
-// if (!user) {
-//   throw new CustomError.NotFoundError("User Not Found");
-// }
+// const getSingleUser = async (req, res) => {
+//   /* <-- my method: Working!*/
+//   if (req.user._id !== req.params.userId && req.user.role !== "admin") {
+//     throw new UnauthenticatedError("Access denied");
+//   }
+//   const user = await User.findOne({ _id: req.params.userId }).select(
+//     "-password",
+//   );
+//   if (!user) {
+//     throw new CustomError.NotFoundError("User Not Found");
+//   }
 
-// res.status(StatusCodes.OK).json({ user });
+//   res.status(StatusCodes.OK).json({ user });
 // };
-//
 
 //--- OR ---
 
-//
 const getSingleUser = async (req, res) => {
-  // <-- John's method
+  /* <-- John's method */
   checkPermissions(req.user, req.params.userId);
   const user = await User.findOne({ _id: req.params.userId }).select(
     "-password",
@@ -99,10 +99,6 @@ const showCurrentUser = async (req, res) => {
 
 //   await user.save();
 
-//   //   { name: req.body.name, email: req.body.email },
-//   //   { new: true, runValidators: true }
-//   // );
-
 //   const userPayload = {
 //     name: user.name,
 //     userId: user._id,
@@ -120,25 +116,18 @@ const showCurrentUser = async (req, res) => {
 //--- OR ---
 
 const updateUser = async (req, res) => {
-  /* user.update() method */
+  /* user.updateOne() method */
 
   if (!req.body.name || !req.body.email) {
     throw new CustomError.BadRequestError("Name and Email are required !");
   }
 
   const user = await User.findById(req.user._id);
-
   if (!user) {
     throw new CustomError.NotFoundError("User Not Found");
   }
-  // user.name = req.body.name;
-  // user.email = req.body.email;
 
   await user.updateOne(req.body, { new: true, runValidators: true });
-
-  //   { name: req.body.name, email: req.body.email },
-  //   { new: true, runValidators: true }
-  // );
 
   const userPayload = {
     name: user.name,

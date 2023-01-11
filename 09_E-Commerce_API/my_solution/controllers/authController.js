@@ -21,6 +21,7 @@ const register = async (req, res) => {
   const role = (await User.countDocuments({})) === 0 ? "admin" : "user";
 
   const newUser = await User.create({ ...req.body, role });
+
   const userPayload = {
     name: newUser.name,
     userId: newUser._id,
@@ -38,7 +39,6 @@ const register = async (req, res) => {
 
 //---------------------------------------------------------------------------------------
 const login = async (req, res) => {
-  //
   // check email & password presents
   if (!req.body.email || !req.body.password) {
     throw new CustomError.BadRequestError("Email and Password are required !");

@@ -3,11 +3,11 @@ const User = require("../models/UserModel");
 const CustomError = require("./../errors");
 const { StatusCodes } = require("http-status-codes");
 const path = require("path");
-
 const productsJson = require("./../mockData/products.json");
+
 //------------------------------------------------------------------
 const createProduct = async (req, res) => {
-  req.body.user = req.user._id;
+  req.body.user = req.user._id; // user id is required in product model
   const product = await Product.create(req.body);
   res.status(StatusCodes.CREATED).json({ product });
 };
@@ -54,6 +54,13 @@ const deleteProduct = async (req, res) => {
 
   await product.remove();
   res.status(StatusCodes.OK).json({ message: "Product deleted successfully" });
+};
+//------------------------------------------------------------------
+const deleteAllProducts = async (req, res) => {
+  await Product.deleteMany({});
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "All Products deleted successfully" });
 };
 //------------------------------------------------------------------
 
@@ -111,6 +118,7 @@ module.exports = {
   getSingleProduct,
   updateProduct,
   deleteProduct,
+  deleteAllProducts,
   uploadImage,
   populateProducts,
   // adminDeleteAllProducts,

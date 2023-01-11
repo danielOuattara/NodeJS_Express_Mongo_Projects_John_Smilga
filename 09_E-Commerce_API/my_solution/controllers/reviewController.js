@@ -7,7 +7,7 @@ const { checkPermissions } = require("../utilities");
 
 //---------------------------------------------------------------------
 const createReview = async (req, res) => {
-  //
+  console.log(req.body);
   const product = await Product.findById(req.body.product);
   if (!product) {
     throw new CustomError.NotFoundError("Product unknown");
@@ -40,7 +40,7 @@ const getAllReviews = async (req, res) => {
     })
     .populate({
       path: "user",
-      select: "-_id name",
+      select: "_id name",
     });
   res.status(StatusCodes.OK).json({ count: reviews.length, reviews });
 };
@@ -54,7 +54,7 @@ const getSingleReview = async (req, res) => {
     })
     .populate({
       path: "user",
-      select: "-_id name",
+      select: "_id name",
     });
 
   if (!review) {
@@ -92,16 +92,22 @@ const deleteReview = async (req, res) => {
   if (!review) {
     throw new CustomError.BadRequestError(`review unknown`);
   }
-  checkPermissions(req.user, review.userId);
-
+  checkPermissions(req.user, review.user._id);
   await review.remove();
-
   res.json({ message: "delete review" });
 };
 
 //---------------------------------------------------------------------
 const getSingleProductReviews = async (req, res) => {
-  const reviews = await Review.find({ product: req.params.productId });
+  const reviews = await Review.find({ product: req.params.productId })
+    .populate({
+      path: "product",
+      select: "name company category image price description",
+    })
+    .populate({
+      path: "user",
+      select: "_id name",
+    });
 
   res.status(StatusCodes.OK).json({ count: reviews.length, reviews });
 };
