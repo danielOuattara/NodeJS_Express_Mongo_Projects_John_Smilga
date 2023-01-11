@@ -13,7 +13,6 @@ const tokenAuthentication = async (req, res, next) => {
   try {
     const token = access_token.split(" ")[1];
     const payload = isTokenValid(token);
-
     // --> Better: register in "req" a complete Mongoose user object
     //             with all possible associations.
     const user = await User.findById(payload.userId).select("-password");
