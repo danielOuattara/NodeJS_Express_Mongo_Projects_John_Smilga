@@ -21,7 +21,7 @@ const agg = [
   },
   {
     $group: {
-      _id: null,
+      _id: "$product",
       averageRating: {
         $avg: "$rating",
       },
@@ -37,12 +37,10 @@ MongoClient.connect(
   { useNewUrlParser: true, useUnifiedTopology: true },
   function (connectErr, client) {
     assert.equal(null, connectErr);
-    const coll = client
-      .db("E-Commerce_API_John_Smilga")
-      .collection("reviews");
+    const coll = client.db("E-Commerce_API_John_Smilga").collection("reviews");
     coll.aggregate(agg, (cmdErr, result) => {
       assert.equal(null, cmdErr);
     });
     client.close();
-  }
+  },
 );
