@@ -1,7 +1,7 @@
 require("dotenv").config();
 const connectDB = require("./connect");
 const Product = require("./../models/Product");
-const jsonProducts = require("./data/products.json");
+const jsonProducts = require("./mockData/products.json");
 
 //--------------------------------------------------------------
 // Async/Await
@@ -31,9 +31,9 @@ const start = () => {
       return Product.deleteMany({});
     })
     .then(() => {
-      jsonProducts.map(item => {
-        item.user = ""
-      })
+      jsonProducts.map((item) => {
+        item.user = "";
+      });
       return Product.create(jsonProducts);
     })
     .then(() => {
