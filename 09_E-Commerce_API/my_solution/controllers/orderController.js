@@ -14,9 +14,9 @@ const fakeStripeAPI = async ({ amount, currency }) => {
 
 //------------------------------------------------------------------
 const createOrder = async (req, res) => {
-  const { items, tax, shippingFee } = req.body;
+  const { items: cartItems, tax, shippingFee } = req.body;
 
-  if (!items || items.length < 1) {
+  if (!cartItems || cartItems.length < 1) {
     throw new CustomError.BadRequestError("Your cart items is empty");
   }
   if (!tax || !shippingFee) {
@@ -28,7 +28,7 @@ const createOrder = async (req, res) => {
   let orderItems = [];
   let subTotal = 0;
 
-  for (const item of items) {
+  for (const item of cartItems) {
     let productInDB = await Product.findById(item.product);
     if (!productInDB) {
       throw new CustomError.NotFoundError(
@@ -70,13 +70,13 @@ const createOrder = async (req, res) => {
   });
 
   const order = await Order.create({
-    orderItems,
-    total,
-    subTotal,
     tax,
     shippingFee,
-    clientSecret: paymentIntent.client_secret,
+    subTotal,
+    total,
+    orderItems,
     user: req.user._id,
+    clientSecret: paymentIntent.client_secret,
   });
 
   res.status(StatusCodes.CREATED).json({ order });
@@ -90,7 +90,7 @@ const getAllOrders = async (req, res) => {
   }
 
   let totalAmount = 0;
-  orders.map((item) => (totalAmount += item.total));
+  orders.map((orderItem) => (totalAmount += orderItem.total));
 
   res.status(StatusCodes.OK).json({
     count: orders.length,
