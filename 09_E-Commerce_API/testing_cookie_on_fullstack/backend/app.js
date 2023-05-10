@@ -15,6 +15,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const xss = require("xss-clean");
 const rateLimiter = require("express-rate-limit");
+//---------------------------------------------------------------
 
 // security packages
 app.use(cors());
@@ -27,7 +28,7 @@ app.use(
     windowMs: 5000,
     max: 200,
     message: { code: 429, message: "Too many connection; Try later !" },
-  })
+  }),
 );
 
 // app.use(morgan("combined"))

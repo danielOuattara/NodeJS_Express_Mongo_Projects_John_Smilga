@@ -17,7 +17,7 @@ const register = async (req, res) => {
   const userExist = await User.findOne({ email: req.body.email });
   if (userExist) {
     throw new BadRequestError(
-      "Email address already used. Please, choose another one"
+      "Email address already used. Please, choose another one",
     );
   }
 
@@ -63,14 +63,14 @@ const login = async (req, res) => {
   const userPayload = { name: user.name, userId: user._id, role: user.role };
   attachCookiesToResponse(res, userPayload);
 
-  // send back reponse to user
-  res.status(StatusCodes.OK).json({ message: "Login successfull" });
+  // send back response to user
+  res.status(StatusCodes.OK).json({ message: "Login successful" });
 };
 
 //-------------------------------------------------------------------------
 const logout = async (req, res) => {
   destroyCookiesInResponse(res);
-  res.status(StatusCodes.OK).json({message: "User is logged out"})
+  res.status(StatusCodes.OK).json({ message: "User is logged out" });
 };
 
 //-------------------------------------------------------------------------

@@ -1,0 +1,4 @@
+The parent public folder contains the Vanilla Javascript
+code for testing cookies on the frontend
+
+This code comes from  /09_E-Commerce_API/final-front-end/front-end
