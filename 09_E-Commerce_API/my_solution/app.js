@@ -1,31 +1,30 @@
 require("express-async-errors");
 const express = require("express");
-const app = express();
-
 // security import
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const cors = require("cors");
 const rateLimiter = require("express-rate-limit");
 const sanitizeExpressMongo = require("express-mongo-sanitize");
-
 // routes import
 const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes ");
 const productRouter = require("./routes/productRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const orderRouter = require("./routes/orderRoutes");
-
 // error handler import
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 
+//-------------------------------------------------------------
 // functional middleware import
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 
-//-------------------------------------------------------------------------------
+//-------------------------------------------------------------
+
+const app = express();
 //
 // security
 app.set("trust proxy", 1);
@@ -39,9 +38,10 @@ app.use(
 app.use(helmet());
 app.use(xss());
 app.use(sanitizeExpressMongo());
+app.use(cors());
 
-// fonctional middlewares
-// app.use(morgan("tiny"));
+// functional middlewares
+app.use(morgan("tiny"));
 app.use(express.json());
 
 //cookies parsing

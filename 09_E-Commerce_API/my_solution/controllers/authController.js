@@ -1,17 +1,16 @@
 const User = require("../models/UserModel");
+const { StatusCodes } = require("http-status-codes");
+const CustomError = require("./../errors");
 const {
   attachCookiesToResponse,
   destroyCookiesInResponse,
 } = require("./../utilities/index");
 
-const { StatusCodes } = require("http-status-codes");
-const CustomError = require("./../errors");
-
 //---------------------------------------------------------------------------------------
 const register = async (req, res) => {
   //check user exists
-  const user = await User.findOne({ email: req.body.email });
-  if (user) {
+  const oldUser = await User.findOne({ email: req.body.email });
+  if (oldUser) {
     throw new CustomError.BadRequestError(
       "Email address already used. Please, choose another one",
     );
@@ -20,18 +19,14 @@ const register = async (req, res) => {
   // first registered user should be an admin
   const role = (await User.countDocuments({})) === 0 ? "admin" : "user";
 
-  const newUser = await User.create({ ...req.body, role });
+  const user = await User.create({ ...req.body, role });
 
-  const userPayload = {
-    name: newUser.name,
-    userId: newUser._id,
-    role: newUser.role,
-  };
+  const userPayload = { name: user.name, userId: user._id, role: user.role };
 
   // this function attaches cookies to res
   attachCookiesToResponse(res, userPayload);
 
-  // res is completed with message of successfull registration then sent
+  // res is completed with message of successful registration then sent
   res
     .status(StatusCodes.CREATED)
     .json({ message: "User Created successfully" });
@@ -51,19 +46,17 @@ const login = async (req, res) => {
   }
 
   // check password !
-  const validPassword = await user.checkPassword(req.body.password);
-  if (!validPassword) {
+  const isValidPassword = await user.checkPassword(req.body.password);
+  if (!isValidPassword) {
     throw new CustomError.UnauthenticatedError("User unknown");
   }
 
-  // every thing OK
-
-  // gather user data payload + attach cookies to response
+  // every thing OK : gather user data payload + attach cookies to response
   const userPayload = { name: user.name, userId: user._id, role: user.role };
   attachCookiesToResponse(res, userPayload);
 
-  // send back reponse to user
-  res.status(StatusCodes.OK).json({ message: "Login successfull" });
+  // send back response to user
+  res.status(StatusCodes.OK).json({ message: "Login successful" });
 };
 
 //-------------------------------------------------------------------------

@@ -14,14 +14,13 @@ const ProductSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      maxLength: 50,
       required: [true, "Price value is required !"],
       default: 0,
     },
     description: {
       type: String,
       required: [true, "Product description is required !"],
-      maxLength: [1000, "Product description, is max 1000 characters"],
+      maxLength: [1000, "Product description, is max 1,000 characters"],
     },
     image: {
       type: String,
@@ -38,7 +37,7 @@ const ProductSchema = new mongoose.Schema(
       required: [true, "Company is required !"],
       enum: {
         values: ["ikea", "liddy", "marcos"],
-        message: "{VALUE} is not suported as company name",
+        message: "{VALUE} is not supported as company name",
       },
     },
     colors: {

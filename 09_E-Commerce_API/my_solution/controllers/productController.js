@@ -1,5 +1,4 @@
 const Product = require("./../models/Product");
-const User = require("../models/UserModel");
 const CustomError = require("./../errors");
 const { StatusCodes } = require("http-status-codes");
 const path = require("path");
@@ -42,7 +41,7 @@ const updateProduct = async (req, res) => {
 
   res
     .status(StatusCodes.OK)
-    .json({ message: "Procust updated successfully", product });
+    .json({ message: "Product updated successfully", product });
 };
 
 //------------------------------------------------------------------
@@ -80,13 +79,17 @@ const uploadImage = async (req, res) => {
     req.files.image.size > 1024 * 1024 // check size
   ) {
     throw new CustomError.BadRequestError(
-      "Image file only required with max size 1Mb",
+      "Only image files with a max size 1Mb are accepted",
     );
   }
+  // define the final path where to store the image
   const imagePath = path.join(
     __dirname,
     "./../public/uploads/" + `${req.files.image.name}`,
   );
+  console.log("__dirname = ", __dirname);
+  console.log("imagePath = ", imagePath);
+
   await req.files.image.mv(imagePath);
 
   res

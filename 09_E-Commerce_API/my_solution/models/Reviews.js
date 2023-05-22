@@ -36,7 +36,7 @@ const ReviewSchema = new mongoose.Schema(
 );
 
 //----------------------------------------------------------------
-// Only One review by user and by product
+// Only One review by user and by product: compound index between product and users
 ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
 //----------------------------------------------------------------
@@ -52,7 +52,7 @@ ReviewSchema.statics.calculateAverageRating = async function (productId) {
       },
     },
   ]);
-  console.log("result = ", result);
+  // console.log("result = ", result);
 
   try {
     await this.model("Product").findOneAndUpdate(

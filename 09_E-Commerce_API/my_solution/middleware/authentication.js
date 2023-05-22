@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const CustomError = require("./../errors");
 const User = require("../models/UserModel");
 const { isTokenValid } = require("./../utilities");
@@ -17,7 +16,6 @@ const tokenAuthentication = async (req, res, next) => {
     //             with all possible associations.
     const user = await User.findById(payload.userId).select("-password");
     req.user = user;
-
     next();
   } catch (error) {
     throw new CustomError.UnauthenticatedError("Request Denied !");

@@ -1,29 +1,26 @@
 const User = require("../models/UserModel");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("./../errors");
-
-const {
-  createTokenUser,
-  attachCookiesToResponse,
-  checkPermissions,
-} = require("./../utilities");
+const { attachCookiesToResponse, checkPermissions } = require("./../utilities");
 
 //-----------------------------------------------------------------
+// const getAllUsers = async (req, res) => {
+//   const users = await User.find({ role: "user" }).select("-password");
+//   res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
+// };
+
+//--- OR ---
+
 // find({filter}, projection)
 const getAllUsers = async (req, res) => {
   const users = await User.find({ role: "user" }, "-password");
   res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
 };
 
-// const getAllUsers = async (req, res) => {
-//   const users = await User.find({ role: "user" }).select("-password");
-//   res.status(StatusCodes.OK).json({ nb_Hits: users.length, users });
-// };
-
 //-----------------------------------------------------------------
 // const getSingleUser = async (req, res) => {
 //   /* <-- my method: Working!*/
-//   if (req.user._id !== req.params.userId && req.user.role !== "admin") {
+//   if (req.user._id !== req.params.userId || req.user.role !== "admin") {
 //     throw new UnauthenticatedError("Access denied");
 //   }
 //   const user = await User.findOne({ _id: req.params.userId }).select(
@@ -40,6 +37,7 @@ const getAllUsers = async (req, res) => {
 
 const getSingleUser = async (req, res) => {
   /* <-- John's method */
+
   checkPermissions(req.user, req.params.userId);
   const user = await User.findOne({ _id: req.params.userId }).select(
     "-password",
@@ -78,7 +76,7 @@ const showCurrentUser = async (req, res) => {
 //   // this function attaches cookies to res
 //   attachCookiesToResponse(res, userPayload);
 
-//   // res is completed with message of successfull registration then sent
+//   // res is completed with message of successful registration then sent
 //   res
 //     .status(StatusCodes.CREATED)
 //     .json({ message: "User updated successfully" });
@@ -108,7 +106,7 @@ const showCurrentUser = async (req, res) => {
 //   // this function attaches cookies to res
 //   attachCookiesToResponse(res, userPayload);
 
-//   // res is completed with message of successfull registration then sent
+//   // res is completed with message of successful registration then sent
 //   res
 //     .status(StatusCodes.CREATED)
 //     .json({ message: "User updated successfully" });
@@ -138,7 +136,7 @@ const updateUser = async (req, res) => {
   // this function attaches cookies to res
   attachCookiesToResponse(res, userPayload);
 
-  // res is completed with message of successfull registration then sent
+  // res is completed with message of successful registration then sent
   res
     .status(StatusCodes.CREATED)
     .json({ message: "User updated successfully" });
@@ -159,8 +157,8 @@ const updateUserPassword = async (req, res) => {
   }
 
   // check password !
-  const validPassword = await user.checkPassword(req.body.oldPassword);
-  if (!validPassword) {
+  const isValidPassword = await user.checkPassword(req.body.oldPassword);
+  if (!isValidPassword) {
     throw new CustomError.UnauthenticatedError("User unknown");
   }
 
@@ -168,7 +166,7 @@ const updateUserPassword = async (req, res) => {
   user.password = req.body.newPassword;
   await user.save();
 
-  // send back reponse to user
+  // send back response to user
   res.status(StatusCodes.OK).json({ message: "Password successfully updated" });
 };
 

@@ -16,9 +16,9 @@ const {
 //----------------------------------------------------------------------
 
 router.route("/").get(tokenAuth, rolePermissions("admin"), getAllUsers);
-router.route("/showMe").get(tokenAuth, showCurrentUser);
-router.route("/updateUser").patch(tokenAuth, updateUser);
-router.route("/updateUserPassword").patch(tokenAuth, updateUserPassword);
+router.route("/show-me").get(tokenAuth, showCurrentUser);
+router.route("/update-user").patch(tokenAuth, updateUser);
+router.route("/update-user-password").patch(tokenAuth, updateUserPassword);
 router.route("/:userId").get(tokenAuth, getSingleUser);
 
 //-----------------------------------------------------------------------

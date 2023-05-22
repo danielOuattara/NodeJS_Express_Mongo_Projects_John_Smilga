@@ -8,16 +8,17 @@ const { checkPermissions } = require("../utilities");
 //---------------------------------------------------------------------
 const createReview = async (req, res) => {
   console.log(req.body);
+  // note ! : req.body.product  => productId
   const product = await Product.findById(req.body.product);
   if (!product) {
     throw new CustomError.NotFoundError("Product unknown");
   }
 
-  const oldReview = await Review.findOne({
+  const alreadySubmittedReview = await Review.findOne({
     product: req.body.product,
     user: req.user._id,
   });
-  if (oldReview) {
+  if (alreadySubmittedReview) {
     throw new CustomError.BadRequestError(
       `Cannot create a new review on this product. But you can update your old review `,
     );
@@ -83,7 +84,7 @@ const updateReview = async (req, res) => {
   review.comment = req.body.comment;
   await review.save();
 
-  res.json({ message: "update review succefuly", review });
+  res.json({ message: "update review successfully", review });
 };
 
 //---------------------------------------------------------------------
