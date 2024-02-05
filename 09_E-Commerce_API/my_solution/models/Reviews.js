@@ -36,7 +36,7 @@ const ReviewSchema = new mongoose.Schema(
 );
 
 //----------------------------------------------------------------
-// Only One review by user and by product: compound index between product and users
+// Only One review by user and by product: compound index between product and user
 ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
 //----------------------------------------------------------------

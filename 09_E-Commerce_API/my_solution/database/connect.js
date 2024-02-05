@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+mongoose.set("strictQuery", false);
 const connectParams = {
   useNewUrlParser: true,
   // useCreateIndex: true,

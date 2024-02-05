@@ -26,7 +26,6 @@ const createReview = async (req, res) => {
 
   req.body.user = req.user._id;
   const review = await Review.create(req.body);
-
   res
     .status(StatusCodes.CREATED)
     .json({ message: "review successfully created", review });
@@ -75,7 +74,7 @@ const updateReview = async (req, res) => {
 
   const review = await Review.findById(req.params.reviewId);
   if (!review) {
-    throw new CustomError.BadRequestError(`review unknown`);
+    throw new CustomError.NotFoundError(`review unknown`);
   }
 
   checkPermissions(req.user, review.user);
